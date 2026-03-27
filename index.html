@@ -1,311 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Air Dryer Sizing Calculator</title>
+<title>โปรแกรมเลือกขนาด Air Dryer</title>
 <style>
 :root {
-  --navy:   #0b1d3a;
-  --blue:   #1353a0;
-  --cyan:   #00b4cc;
-  --gold:   #f5a623;
-  --green:  #00876a;
-  --light:  #eaf1fb;
-  --border: #c8d8ef;
-  --muted:  #5a7296;
-  --text:   #12223d;
-  --white:  #ffffff;
-  --fh: 'Segoe UI', 'Arial Black', Arial, sans-serif;
-  --fb: 'Segoe UI', Tahoma, Arial, sans-serif;
+  --navy:#0b1d3a; --blue:#1353a0; --cyan:#00b4cc;
+  --gold:#f5a623; --green:#00876a; --light:#eaf1fb;
+  --border:#c8d8ef; --muted:#5a7296; --text:#12223d; --white:#ffffff;
+  --fh:'Segoe UI','Arial Black',Arial,sans-serif;
+  --fb:'Segoe UI',Tahoma,Arial,sans-serif;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--fb);background:#dde6f5;color:var(--text);padding:12px;-webkit-text-size-adjust:100%;}
 
-/* ─── SCREEN (mobile-first) ─── */
-body {
-  font-family: var(--fb);
-  background: #dde6f5;
-  color: var(--text);
-  padding: 12px;
-  -webkit-text-size-adjust: 100%;
+/* LANG TOGGLE */
+.lang-bar{display:flex;justify-content:flex-end;max-width:900px;margin:0 auto 8px;gap:6px;}
+.lang-btn{
+  padding:6px 16px;border:2px solid var(--border);border-radius:20px;
+  font-family:var(--fh);font-size:12px;font-weight:700;cursor:pointer;
+  background:var(--white);color:var(--muted);transition:all .2s;
 }
+.lang-btn.active{background:var(--navy);color:var(--cyan);border-color:var(--navy);}
 
-.page {
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  background: var(--white);
-  border-radius: 8px;
-  box-shadow: 0 4px 24px rgba(10,20,50,0.15);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+/* PAGE */
+.page{width:100%;max-width:900px;margin:0 auto;background:var(--white);border-radius:8px;box-shadow:0 4px 24px rgba(10,20,50,0.15);display:flex;flex-direction:column;overflow:hidden;}
 
-/* ─── HEADER ─── */
-.hdr {
-  background: var(--navy);
-  padding: 14px 16px 12px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 8px;
-}
-.hdr-left .tag {
-  font-family: var(--fh);
-  color: var(--cyan);
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  opacity: 0.8;
-}
-.hdr-left h1 {
-  font-family: var(--fh);
-  color: var(--white);
-  font-size: clamp(16px, 4vw, 22px);
-  font-weight: 700;
-  letter-spacing: 1px;
-  line-height: 1.2;
-}
-.hdr-left h1 span { color: var(--cyan); }
-.hdr-left .sub {
-  color: rgba(255,255,255,0.4);
-  font-size: 9px;
-  margin-top: 3px;
-}
-.hdr-right { text-align: right; }
-.hdr-right .doc-no {
-  font-family: var(--fh);
-  color: var(--cyan);
-  font-size: 10px;
-  letter-spacing: 1px;
-  font-weight: 600;
-}
-.hdr-right .doc-date { color: rgba(255,255,255,0.35); font-size: 9px; margin-top: 2px; }
+/* HEADER */
+.hdr{background:var(--navy);padding:14px 16px 12px;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:8px;}
+.hdr-left .tag{font-family:var(--fh);color:var(--cyan);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;opacity:.8;}
+.hdr-left h1{font-family:var(--fh);color:var(--white);font-size:clamp(15px,4vw,22px);font-weight:700;letter-spacing:1px;line-height:1.2;}
+.hdr-left h1 span{color:var(--cyan);}
+.hdr-left .sub{color:rgba(255,255,255,0.4);font-size:9px;margin-top:3px;}
+.hdr-right{text-align:right;}
+.hdr-right .doc-no{font-family:var(--fh);color:var(--cyan);font-size:10px;letter-spacing:1px;font-weight:600;}
+.hdr-right .doc-date{color:rgba(255,255,255,0.35);font-size:9px;margin-top:2px;}
 
-/* ─── BODY ─── */
-.body { padding: 12px 14px 10px; display: flex; flex-direction: column; gap: 10px; }
+/* BODY */
+.body{padding:12px 14px 10px;display:flex;flex-direction:column;gap:10px;}
 
-/* ─── CARD ─── */
-.card { border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
-.card-head {
-  background: var(--navy);
-  padding: 5px 12px;
-  display: flex; align-items: center; gap: 7px;
-}
-.card-head span {
-  font-family: var(--fh);
-  color: var(--cyan);
-  font-size: 9.5px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-.card-head .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); flex-shrink: 0; }
-.card-body { padding: 10px 12px; }
+/* CARD */
+.card{border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.card-head{background:var(--navy);padding:5px 12px;display:flex;align-items:center;gap:7px;}
+.card-head span{font-family:var(--fh);color:var(--cyan);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+.card-head .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0;}
+.card-body{padding:10px 12px;}
 
-/* ─── INPUT GRID ─── */
-.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-.field { display: flex; flex-direction: column; gap: 3px; }
-.field label {
-  font-size: 9px; font-weight: 700; color: var(--muted);
-  letter-spacing: 0.6px; text-transform: uppercase;
-}
-.fr { display: flex; }
-.fr input, .fr select {
-  flex: 1; min-width: 0;
-  padding: 8px 8px;
-  border: 1.5px solid var(--border);
-  border-radius: 5px 0 0 5px;
-  font-family: var(--fh);
-  font-size: clamp(12px, 3vw, 14px); font-weight: 700;
-  color: var(--text); background: #f5f8ff;
-  outline: none;
-  -webkit-appearance: none; appearance: none;
-}
-.fr input:focus, .fr select:focus { border-color: var(--cyan); background: #fff; }
-.fr .u {
-  background: var(--light);
-  border: 1.5px solid var(--border); border-left: none;
-  border-radius: 0 5px 5px 0;
-  padding: 8px 8px;
-  font-size: 9px; font-weight: 700; color: var(--blue);
-  white-space: nowrap; display: flex; align-items: center;
-}
-.fr select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a7296'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px;
-}
-.fr-full input {
-  flex: 1; padding: 8px 8px;
-  border: 1.5px solid var(--border); border-radius: 5px;
-  font-family: var(--fh); font-size: clamp(12px, 3vw, 14px); font-weight: 700;
-  color: var(--text); background: #f5f8ff; outline: none; width: 100%;
-}
-.fr-full input:focus { border-color: var(--cyan); background: #fff; }
+/* INPUTS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.field{display:flex;flex-direction:column;gap:3px;}
+.field label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
+.fr{display:flex;}
+.fr input,.fr select{flex:1;min-width:0;padding:8px 8px;border:1.5px solid var(--border);border-radius:5px 0 0 5px;font-family:var(--fh);font-size:clamp(12px,3vw,14px);font-weight:700;color:var(--text);background:#f5f8ff;outline:none;-webkit-appearance:none;appearance:none;}
+.fr input:focus,.fr select:focus{border-color:var(--cyan);background:#fff;}
+.fr .u{background:var(--light);border:1.5px solid var(--border);border-left:none;border-radius:0 5px 5px 0;padding:8px 8px;font-size:9px;font-weight:700;color:var(--blue);white-space:nowrap;display:flex;align-items:center;}
+.fr select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a7296'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;}
+.fr-full input{flex:1;padding:8px 8px;border:1.5px solid var(--border);border-radius:5px;font-family:var(--fh);font-size:clamp(12px,3vw,14px);font-weight:700;color:var(--text);background:#f5f8ff;outline:none;width:100%;}
+.fr-full input:focus{border-color:var(--cyan);background:#fff;}
 
-/* ─── RESULT STRIP ─── */
-.rstrip {
-  background: linear-gradient(90deg, var(--navy) 0%, #0f2a50 100%);
-  border-radius: 6px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-  gap: 2px;
-}
-.ri { flex: 1; min-width: 0; text-align: center; position: relative; }
-.ri + .ri::before {
-  content: ''; position: absolute; left: 0; top: 15%; bottom: 15%;
-  width: 1px; background: rgba(255,255,255,0.1);
-}
-.rl {
-  font-family: var(--fh); font-size: clamp(7px, 1.5vw, 9px);
-  letter-spacing: 1px; text-transform: uppercase;
-  color: rgba(255,255,255,0.4); margin-bottom: 2px;
-}
-.rv {
-  font-family: var(--fh);
-  font-size: clamp(18px, 5vw, 28px); font-weight: 700; line-height: 1;
-}
-.rv.c  { color: #00e5ff; }
-.rv.g  { color: var(--gold); }
-.rv.gr { color: #00e5b0; }
-.rv.b  { color: #a8d8ff; font-size: clamp(14px, 4vw, 20px); }
-.ru { font-size: clamp(8px, 2vw, 10px); color: rgba(255,255,255,0.3); margin-top: 1px; }
-.op { color: rgba(255,255,255,0.2); font-size: clamp(14px, 3vw, 20px); padding: 0 1px; flex-shrink: 0; font-family: Arial, sans-serif; }
+/* RESULT STRIP */
+.rstrip{background:linear-gradient(90deg,var(--navy) 0%,#0f2a50 100%);border-radius:6px;padding:12px 14px;display:flex;align-items:center;flex-wrap:nowrap;gap:2px;}
+.ri{flex:1;min-width:0;text-align:center;position:relative;}
+.ri+.ri::before{content:'';position:absolute;left:0;top:15%;bottom:15%;width:1px;background:rgba(255,255,255,0.1);}
+.rl{font-family:var(--fh);font-size:clamp(7px,1.5vw,9px);letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:2px;}
+.rv{font-family:var(--fh);font-size:clamp(18px,5vw,28px);font-weight:700;line-height:1;}
+.rv.c{color:#00e5ff;} .rv.g{color:var(--gold);} .rv.gr{color:#00e5b0;} .rv.b{color:#a8d8ff;font-size:clamp(14px,4vw,20px);}
+.ru{font-size:clamp(8px,2vw,10px);color:rgba(255,255,255,0.3);margin-top:1px;}
+.op{color:rgba(255,255,255,0.2);font-size:clamp(14px,3vw,20px);padding:0 1px;flex-shrink:0;font-family:Arial,sans-serif;}
 
-/* ─── LOWER ─── */
-.lower { display: flex; gap: 10px; }
-.lower-left  { flex: 1.35; min-width: 0; }
-.lower-right { flex: 1; min-width: 0; }
+/* LOWER */
+.lower{display:flex;gap:10px;}
+.lower-left{flex:1.35;min-width:0;} .lower-right{flex:1;min-width:0;}
 
-/* ─── BETA TABLES ─── */
-.four { display: grid; grid-template-columns: repeat(4,1fr); gap: 6px; }
-.bt { width: 100%; border-collapse: collapse; }
-.bt .th1 {
-  background: var(--blue); color: var(--white);
-  font-family: var(--fh); font-size: clamp(8px, 1.5vw, 10px);
-  letter-spacing: 0.5px; text-transform: uppercase;
-  padding: 5px 4px; text-align: center; font-weight: 700;
-}
-.bt .th2 {
-  background: #e8f0fb; color: var(--muted);
-  font-size: clamp(7px, 1.4vw, 9px); font-weight: 700;
-  padding: 3px 4px; text-align: center;
-}
-.bt td {
-  padding: clamp(3px, 0.8vw, 5px) 4px;
-  text-align: center; border-bottom: 1px solid #edf2fb;
-  color: var(--text); font-size: clamp(9px, 1.8vw, 11px);
-}
-.bt td:first-child { color: var(--muted); font-weight: 600; }
-.bt tr:nth-child(even) td { background: #f8faff; }
-.bt .hl td { background: #fff3e0 !important; color: #bf6000 !important; font-weight: 700; }
-.bt .hl td:first-child { color: #bf6000 !important; }
+/* BETA TABLES */
+.four{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.bt{width:100%;border-collapse:collapse;}
+.bt .th1{background:var(--blue);color:var(--white);font-family:var(--fh);font-size:clamp(8px,1.5vw,10px);letter-spacing:.5px;text-transform:uppercase;padding:5px 4px;text-align:center;font-weight:700;}
+.bt .th2{background:#e8f0fb;color:var(--muted);font-size:clamp(7px,1.4vw,9px);font-weight:700;padding:3px 4px;text-align:center;}
+.bt td{padding:clamp(3px,.8vw,5px) 4px;text-align:center;border-bottom:1px solid #edf2fb;color:var(--text);font-size:clamp(9px,1.8vw,11px);}
+.bt td:first-child{color:var(--muted);font-weight:600;}
+.bt tr:nth-child(even) td{background:#f8faff;}
+.bt .hl td{background:#fff3e0!important;color:#bf6000!important;font-weight:700;}
+.bt .hl td:first-child{color:#bf6000!important;}
 
-/* ─── SUMMARY ─── */
-.st { width: 100%; border-collapse: collapse; }
-.st tr td { padding: 5px 10px; border-bottom: 1px solid #eef2f9; vertical-align: middle; }
-.st .lb { color: var(--muted); font-weight: 700; width: 50%; font-size: clamp(9px, 2vw, 10.5px); }
-.st .vl { color: var(--text); font-size: clamp(9px, 2vw, 11px); }
-.st .big td {
-  background: #e6f4f1;
-  font-family: var(--fh); font-size: clamp(12px, 3vw, 15px); font-weight: 700;
-  color: var(--green); padding: 7px 10px;
-}
-.st .big td.lb { color: var(--green); font-size: clamp(8px, 2vw, 10px); }
-.st .sep td { padding: 1px; }
-.st .sep td hr { border: none; border-top: 1px dashed var(--border); }
+/* SUMMARY */
+.st{width:100%;border-collapse:collapse;}
+.st tr td{padding:5px 10px;border-bottom:1px solid #eef2f9;vertical-align:middle;}
+.st .lb{color:var(--muted);font-weight:700;width:50%;font-size:clamp(9px,2vw,10.5px);}
+.st .vl{color:var(--text);font-size:clamp(9px,2vw,11px);}
+.st .big td{background:#e6f4f1;font-family:var(--fh);font-size:clamp(12px,3vw,15px);font-weight:700;color:var(--green);padding:7px 10px;}
+.st .big td.lb{color:var(--green);font-size:clamp(8px,2vw,10px);}
+.st .sep td{padding:1px;}
+.st .sep td hr{border:none;border-top:1px dashed var(--border);}
 
-/* ─── FOOTER ─── */
-.footer {
-  border-top: 1px solid var(--border);
-  padding: 7px 14px;
-  display: flex; justify-content: space-between; align-items: center;
-  background: #f7f9fe; flex-wrap: wrap; gap: 4px;
-}
-.footer-logo { font-family: var(--fh); font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: 1px; }
-.footer-l { font-size: 9px; color: var(--muted); }
-.footer-r { font-size: 9px; color: var(--muted); text-align: right; }
+/* FOOTER */
+.footer{border-top:1px solid var(--border);padding:7px 14px;display:flex;justify-content:space-between;align-items:center;background:#f7f9fe;flex-wrap:wrap;gap:4px;}
+.footer-logo{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--blue);letter-spacing:1px;}
+.footer-l{font-size:9px;color:var(--muted);}
+.footer-r{font-size:9px;color:var(--muted);text-align:right;}
 
-/* ─── SCREEN BUTTONS ─── */
-.btns { text-align: center; margin: 14px 0 4px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
-.pb {
-  background: var(--navy); color: var(--cyan);
-  border: none; border-radius: 6px;
-  padding: 12px 28px;
-  font-family: var(--fh); font-size: 14px; font-weight: 700; letter-spacing: 1px;
-  cursor: pointer;
+/* BUTTONS */
+.btns{text-align:center;margin:14px 0 4px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+.pb{background:var(--navy);color:var(--cyan);border:none;border-radius:6px;padding:12px 28px;font-family:var(--fh);font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;}
+.pb:hover{opacity:.85;}
+.rb{background:#eef2f9;color:var(--muted);border:1.5px solid var(--border);border-radius:6px;padding:12px 22px;font-family:var(--fh);font-size:14px;font-weight:600;cursor:pointer;}
+.rb:hover{background:#e2e8f4;}
+
+/* MOBILE */
+@media(max-width:600px){
+  body{padding:8px;}
+  .g4{grid-template-columns:repeat(2,1fr);}
+  .lower{flex-direction:column;}
+  .lower-left,.lower-right{flex:none;width:100%;}
+  .four{grid-template-columns:repeat(2,1fr);}
+  .rstrip{flex-wrap:wrap;gap:6px;padding:10px;}
+  .ri{min-width:40%;flex:none;}
+  .ri+.ri::before{display:none;}
+  .op{display:none;}
+  .ri:nth-child(5){min-width:100%;}
+  .btns{flex-direction:column;align-items:center;}
+  .pb,.rb{width:100%;max-width:320px;}
+  .lang-bar{justify-content:center;}
 }
-.rb {
-  background: #eef2f9; color: var(--muted);
-  border: 1.5px solid var(--border); border-radius: 6px;
-  padding: 12px 22px;
-  font-family: var(--fh); font-size: 14px; font-weight: 600;
-  cursor: pointer;
+@media(max-width:380px){
+  .g2{grid-template-columns:1fr;}
+  .four{grid-template-columns:repeat(2,1fr);}
 }
 
-/* ─── MOBILE BREAKPOINTS ─── */
-@media (max-width: 600px) {
-  body { padding: 8px; }
-  .g4  { grid-template-columns: repeat(2, 1fr); }
-  .lower { flex-direction: column; }
-  .lower-left, .lower-right { flex: none; width: 100%; }
-  .four { grid-template-columns: repeat(2,1fr); }
-  .rstrip { flex-wrap: wrap; gap: 6px; padding: 10px; }
-  .ri { min-width: 40%; flex: none; }
-  .ri + .ri::before { display: none; }
-  .op { display: none; }
-  .ri:nth-child(5) { min-width: 100%; }
-  .btns { flex-direction: column; align-items: center; }
-  .pb, .rb { width: 100%; max-width: 320px; }
-}
-@media (max-width: 380px) {
-  .g2 { grid-template-columns: 1fr; }
-  .four { grid-template-columns: repeat(2,1fr); }
-}
-
-/* ─── PRINT ─── */
-@media print {
-  @page { size: A4 portrait; margin: 0; }
-  body { background: white !important; padding: 0 !important; }
-  .page {
-    width: 210mm !important; max-width: 210mm !important;
-    min-height: 297mm !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    margin: 0 !important;
+/* PRINT */
+@media print{
+  @page{size:A4 portrait;margin:0;}
+  body{background:white!important;padding:0!important;}
+  .page{width:210mm!important;max-width:210mm!important;min-height:297mm!important;border-radius:0!important;box-shadow:none!important;margin:0!important;}
+  .btns,.lang-bar{display:none!important;}
+  .g4{grid-template-columns:repeat(4,1fr)!important;}
+  .four{grid-template-columns:repeat(4,1fr)!important;}
+  .lower{flex-direction:row!important;}
+  .lower-left{flex:1.35!important;} .lower-right{flex:1!important;}
+  .rstrip{flex-wrap:nowrap!important;}
+  .ri{min-width:0!important;flex:1!important;}
+  .op{display:block!important;}
+  .hdr,.card-head,.rstrip,.bt .th1,.bt .th2,.footer,
+  .bt .hl td,.bt tr:nth-child(even) td,.st .big td{
+    -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;
   }
-  .btns { display: none !important; }
-  /* Force 4 columns on print regardless of screen width */
-  .g4   { grid-template-columns: repeat(4,1fr) !important; }
-  .four { grid-template-columns: repeat(4,1fr) !important; }
-  .lower { flex-direction: row !important; }
-  .lower-left  { flex: 1.35 !important; }
-  .lower-right { flex: 1 !important; }
-  .rstrip { flex-wrap: nowrap !important; }
-  .ri { min-width: 0 !important; flex: 1 !important; }
-  .op { display: block !important; }
-  /* Color preservation */
-  .hdr, .card-head, .rstrip, .bt .th1, .bt .th2, .footer,
-  .bt .hl td, .bt tr:nth-child(even) td,
-  .st .big td { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
 }
 </style>
 </head>
 <body>
+
+<!-- LANGUAGE TOGGLE -->
+<div class="lang-bar">
+  <button class="lang-btn active" id="btn-th" onclick="setLang('th')">🇹🇭 ภาษาไทย</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
+</div>
 
 <div class="page">
 
   <!-- HEADER -->
   <div class="hdr">
     <div class="hdr-left">
-      <div class="tag">Engineering Technical Document</div>
-      <h1>AIR DRYER <span>SIZING</span> CALCULATOR</h1>
-      <div class="sub">Refrigerant Type &nbsp;&middot;&nbsp; Correction Factor Method &nbsp;&middot;&nbsp; Flow Rate Selection</div>
+      <div class="tag" id="t-doctag">เอกสารทางวิศวกรรม</div>
+      <h1 id="t-title">โปรแกรมเลือกขนาด <span>AIR DRYER</span></h1>
+      <div class="sub" id="t-sub">ชนิด Refrigerant · วิธีคำนวณด้วยค่า Correction Factor · คัดเลือก Flow Rate</div>
     </div>
     <div class="hdr-right">
       <div class="doc-no">DOC NO.&nbsp; AD-CALC-001</div>
@@ -317,26 +176,24 @@ body {
 
     <!-- INPUT CARD -->
     <div class="card">
-      <div class="card-head"><div class="dot"></div><span>System Input Parameters</span></div>
+      <div class="card-head"><div class="dot"></div><span id="t-input">พารามิเตอร์ระบบ</span></div>
       <div class="card-body">
         <div class="g2" style="margin-bottom:8px;">
           <div class="field">
-            <label>Air Compressor Flow Rate</label>
+            <label id="t-flow-lbl">อัตราการไหลของ Air Compressor</label>
             <div class="fr">
               <input type="number" id="flowRate" value="14.7" step="0.1" min="0.1" oninput="calc()" inputmode="decimal">
               <div class="u">m&sup3;/min</div>
             </div>
           </div>
           <div class="field">
-            <label>Compressor Model / Tag No.</label>
-            <div class="fr-full">
-              <input type="text" id="compModel" value="PMV2-75-8">
-            </div>
+            <label id="t-model-lbl">รุ่น / หมายเลขเครื่อง</label>
+            <div class="fr-full"><input type="text" id="compModel" value="PMV2-75-8"></div>
           </div>
         </div>
         <div class="g4">
           <div class="field">
-            <label>Pressure (&#946;1)</label>
+            <label id="t-p-lbl">ความดัน (&#946;1)</label>
             <div class="fr">
               <select id="pressure" onchange="calc()">
                 <option value="0.65">3 bar</option><option value="0.8">4 bar</option>
@@ -348,7 +205,7 @@ body {
             </div>
           </div>
           <div class="field">
-            <label>Inlet Temp (&#946;2)</label>
+            <label id="t-it-lbl">อุณหภูมิขาเข้า (&#946;2)</label>
             <div class="fr">
               <select id="inletTemp" onchange="calc()">
                 <option value="1.25">45&deg;C</option><option value="1.15">50&deg;C</option>
@@ -359,7 +216,7 @@ body {
             </div>
           </div>
           <div class="field">
-            <label>Ambient Temp (&#946;3)</label>
+            <label id="t-at-lbl">อุณหภูมิแวดล้อม (&#946;3)</label>
             <div class="fr">
               <select id="ambientTemp" onchange="calc()">
                 <option value="1.2">25&deg;C</option><option value="1.03">30&deg;C</option>
@@ -370,7 +227,7 @@ body {
             </div>
           </div>
           <div class="field">
-            <label>Dew Point (&#946;4)</label>
+            <label id="t-dp-lbl">จุดน้ำค้าง (&#946;4)</label>
             <div class="fr">
               <select id="dewPoint" onchange="calc()">
                 <option value="0.85">-2&deg;C</option><option value="0.9">0&deg;C</option>
@@ -386,7 +243,7 @@ body {
     <!-- RESULT STRIP -->
     <div class="rstrip">
       <div class="ri">
-        <div class="rl">Compressor Flow</div>
+        <div class="rl" id="t-r1">อัตราไหล Compressor</div>
         <div class="rv c" id="res-flow">14.70</div>
         <div class="ru">m&sup3;/min</div>
       </div>
@@ -394,30 +251,30 @@ body {
       <div class="ri">
         <div class="rl">&#946;1&times;&#946;2&times;&#946;3&times;&#946;4</div>
         <div class="rv g" id="res-beta">&mdash;</div>
-        <div class="ru">factor</div>
+        <div class="ru" id="t-r2">ค่าปรับแก้รวม</div>
       </div>
       <div class="op">=</div>
       <div class="ri">
-        <div class="rl">Dryer Flow</div>
+        <div class="rl" id="t-r3">อัตราไหล Air Dryer ที่ต้องการ</div>
         <div class="rv gr" id="res-dryer">&mdash;</div>
         <div class="ru">m&sup3;/min</div>
       </div>
       <div class="ri">
-        <div class="rl">Equivalent</div>
+        <div class="rl" id="t-r4">เทียบเท่า</div>
         <div class="rv b" id="res-lpm">&mdash;</div>
         <div class="ru">L/min</div>
       </div>
     </div>
 
-    <!-- LOWER: Tables + Summary -->
+    <!-- LOWER -->
     <div class="lower">
       <div class="lower-left">
         <div class="card" style="height:100%;">
-          <div class="card-head"><div class="dot"></div><span>Correction Factor Reference Tables</span></div>
+          <div class="card-head"><div class="dot"></div><span id="t-reftbl">ตารางค่า Correction Factor อ้างอิง</span></div>
           <div class="card-body" style="padding:7px 9px;">
             <div class="four">
               <table class="bt" id="tb1">
-                <tr><td class="th1" colspan="2">&#946;1 Pressure</td></tr>
+                <tr><td class="th1" colspan="2" id="t-b1h">&#946;1 ความดัน</td></tr>
                 <tr><td class="th2">bar</td><td class="th2">&#946;1</td></tr>
                 <tr data-v="0.65"><td>3</td><td>0.65</td></tr>
                 <tr data-v="0.8"><td>4</td><td>0.80</td></tr>
@@ -431,7 +288,7 @@ body {
                 <tr data-v="1.19"><td>16</td><td>1.19</td></tr>
               </table>
               <table class="bt" id="tb2">
-                <tr><td class="th1" colspan="2">&#946;2 Inlet</td></tr>
+                <tr><td class="th1" colspan="2" id="t-b2h">&#946;2 อุณหภูมิขาเข้า</td></tr>
                 <tr><td class="th2">&deg;C</td><td class="th2">&#946;2</td></tr>
                 <tr data-v="1.25"><td>45</td><td>1.25</td></tr>
                 <tr data-v="1.15"><td>50</td><td>1.15</td></tr>
@@ -443,7 +300,7 @@ body {
                 <tr data-v="0.80"><td>80</td><td>0.80</td></tr>
               </table>
               <table class="bt" id="tb3">
-                <tr><td class="th1" colspan="2">&#946;3 Ambient</td></tr>
+                <tr><td class="th1" colspan="2" id="t-b3h">&#946;3 อุณหภูมิแวดล้อม</td></tr>
                 <tr><td class="th2">&deg;C</td><td class="th2">&#946;3</td></tr>
                 <tr data-v="1.2"><td>25</td><td>1.20</td></tr>
                 <tr data-v="1.03"><td>30</td><td>1.03</td></tr>
@@ -455,7 +312,7 @@ body {
                 <tr data-v="0.60"><td>50</td><td>0.60</td></tr>
               </table>
               <table class="bt" id="tb4">
-                <tr><td class="th1" colspan="2">&#946;4 Dew Pt.</td></tr>
+                <tr><td class="th1" colspan="2" id="t-b4h">&#946;4 จุดน้ำค้าง</td></tr>
                 <tr><td class="th2">&deg;C</td><td class="th2">&#946;4</td></tr>
                 <tr data-v="0.85"><td>-2</td><td>0.85</td></tr>
                 <tr data-v="0.9"><td>0</td><td>0.90</td></tr>
@@ -470,7 +327,7 @@ body {
       </div>
       <div class="lower-right">
         <div class="card" style="height:100%;">
-          <div class="card-head"><div class="dot"></div><span>Selection Summary</span></div>
+          <div class="card-head"><div class="dot"></div><span id="t-summary">สรุปการคัดเลือก</span></div>
           <div class="card-body" style="padding:0;">
             <table class="st" id="sum-tbl"></table>
           </div>
@@ -478,13 +335,13 @@ body {
       </div>
     </div>
 
-  </div><!-- /body -->
+  </div>
 
   <!-- FOOTER -->
   <div class="footer">
     <div class="footer-l">
-      <div class="footer-logo">AIR DRYER SIZING CALCULATOR</div>
-      <div style="margin-top:2px;">Refrigerant Type &middot; Correction Factor Method</div>
+      <div class="footer-logo" id="t-footer-logo">โปรแกรมเลือกขนาด AIR DRYER</div>
+      <div style="margin-top:2px;" id="t-footer-sub">ชนิด Refrigerant · วิธี Correction Factor</div>
     </div>
     <div class="footer-r">
       <div id="footer-date">&mdash;</div>
@@ -492,86 +349,168 @@ body {
     </div>
   </div>
 
-</div><!-- /page -->
+</div>
 
 <!-- BUTTONS -->
 <div class="btns">
-  <button class="pb" onclick="window.print()">&#128424; &nbsp;PRINT / SAVE PDF</button>
-  <button class="rb" onclick="resetForm()">&#8635; &nbsp;Reset</button>
+  <button class="pb" id="t-print-btn" onclick="window.print()">&#128424;&nbsp; พิมพ์ / บันทึก PDF</button>
+  <button class="rb" id="t-reset-btn" onclick="resetForm()">&#8635;&nbsp; รีเซ็ต</button>
 </div>
 
 <script>
+var lang = 'th';
 var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function pad(n){ return n<10?'0'+n:''+n; }
+function gst(id){ var e=document.getElementById(id); return e.options[e.selectedIndex].text; }
 
-function gst(id){
-  var e=document.getElementById(id);
-  return e.options[e.selectedIndex].text;
+/* ── TRANSLATIONS ── */
+var TX = {
+  th: {
+    doctag:'เอกสารทางวิศวกรรม',
+    title:'โปรแกรมเลือกขนาด <span>AIR DRYER</span>',
+    sub:'ชนิด Refrigerant · วิธีคำนวณด้วยค่า Correction Factor · คัดเลือก Flow Rate',
+    input:'พารามิเตอร์ระบบ',
+    flowLbl:'อัตราการไหลของ Air Compressor',
+    modelLbl:'รุ่น / หมายเลขเครื่อง',
+    pLbl:'ความดัน (β1)', itLbl:'อุณหภูมิขาเข้า (β2)',
+    atLbl:'อุณหภูมิแวดล้อม (β3)', dpLbl:'จุดน้ำค้าง (β4)',
+    r1:'อัตราไหล Compressor', r2:'ค่าปรับแก้รวม',
+    r3:'อัตราไหล Air Dryer ที่ต้องการ', r4:'เทียบเท่า',
+    reftbl:'ตารางค่า Correction Factor อ้างอิง',
+    b1h:'β1 ความดัน', b2h:'β2 อุณหภูมิขาเข้า',
+    b3h:'β3 อุณหภูมิแวดล้อม', b4h:'β4 จุดน้ำค้าง',
+    summary:'สรุปการคัดเลือก',
+    footerLogo:'โปรแกรมเลือกขนาด AIR DRYER',
+    footerSub:'ชนิด Refrigerant · วิธี Correction Factor',
+    printBtn:'🖨️  พิมพ์ / บันทึก PDF', resetBtn:'↺  รีเซ็ต',
+    /* summary labels */
+    sModel:'รุ่น / หมายเลขเครื่อง', sFlow:'อัตราการไหล Compressor',
+    sPres:'ความดันใช้งาน (β1)', sInlet:'อุณหภูมิขาเข้า (β2)',
+    sAmb:'อุณหภูมิแวดล้อม (β3)', sDew:'จุดน้ำค้างที่ต้องการ (β4)',
+    sComb:'ค่าปรับแก้รวม (β1×β2×β3×β4)',
+    sReq:'อัตราไหล AIR DRYER ที่ต้องการ',
+    sType:'ประเภท Air Dryer', sTypeVal:'Refrigerant Type',
+    sDewPerf:'ประสิทธิภาพ Dew Point', sDewPerfVal:'+2°C (ขั้นต่ำ)',
+    dateLabel:'วันที่: '
+  },
+  en: {
+    doctag:'Engineering Technical Document',
+    title:'AIR DRYER <span>SIZING</span> CALCULATOR',
+    sub:'Refrigerant Type · Correction Factor Method · Flow Rate Selection',
+    input:'System Input Parameters',
+    flowLbl:'Air Compressor Flow Rate',
+    modelLbl:'Compressor Model / Tag No.',
+    pLbl:'Pressure (β1)', itLbl:'Inlet Temp (β2)',
+    atLbl:'Ambient Temp (β3)', dpLbl:'Dew Point (β4)',
+    r1:'Compressor Flow', r2:'Combined Factor',
+    r3:'Required Dryer Flow', r4:'Equivalent',
+    reftbl:'Correction Factor Reference Tables',
+    b1h:'β1 Pressure', b2h:'β2 Inlet Temp',
+    b3h:'β3 Ambient', b4h:'β4 Dew Point',
+    summary:'Selection Summary',
+    footerLogo:'AIR DRYER SIZING CALCULATOR',
+    footerSub:'Refrigerant Type · Correction Factor Method',
+    printBtn:'🖨️  PRINT / SAVE PDF', resetBtn:'↺  Reset',
+    /* summary labels */
+    sModel:'Compressor Model', sFlow:'Compressor Flow Rate',
+    sPres:'Operating Pressure (β1)', sInlet:'Inlet Air Temp (β2)',
+    sAmb:'Ambient Temp (β3)', sDew:'Required Dew Point (β4)',
+    sComb:'Combined Factor (β1×β2×β3×β4)',
+    sReq:'REQUIRED DRYER FLOW RATE',
+    sType:'Dryer Type', sTypeVal:'Refrigerant Type',
+    sDewPerf:'Dew Point Performance', sDewPerfVal:'+2°C (minimum)',
+    dateLabel:'Date: '
+  }
+};
+
+function setLang(l){
+  lang = l;
+  var tx = TX[l];
+  document.getElementById('btn-th').classList.toggle('active', l==='th');
+  document.getElementById('btn-en').classList.toggle('active', l==='en');
+  document.getElementById('t-doctag').textContent   = tx.doctag;
+  document.getElementById('t-title').innerHTML      = tx.title;
+  document.getElementById('t-sub').textContent      = tx.sub;
+  document.getElementById('t-input').textContent    = tx.input;
+  document.getElementById('t-flow-lbl').textContent = tx.flowLbl;
+  document.getElementById('t-model-lbl').textContent= tx.modelLbl;
+  document.getElementById('t-p-lbl').textContent    = tx.pLbl;
+  document.getElementById('t-it-lbl').textContent   = tx.itLbl;
+  document.getElementById('t-at-lbl').textContent   = tx.atLbl;
+  document.getElementById('t-dp-lbl').textContent   = tx.dpLbl;
+  document.getElementById('t-r1').textContent       = tx.r1;
+  document.getElementById('t-r2').textContent       = tx.r2;
+  document.getElementById('t-r3').textContent       = tx.r3;
+  document.getElementById('t-r4').textContent       = tx.r4;
+  document.getElementById('t-reftbl').textContent   = tx.reftbl;
+  document.getElementById('t-b1h').textContent      = tx.b1h;
+  document.getElementById('t-b2h').textContent      = tx.b2h;
+  document.getElementById('t-b3h').textContent      = tx.b3h;
+  document.getElementById('t-b4h').textContent      = tx.b4h;
+  document.getElementById('t-summary').textContent  = tx.summary;
+  document.getElementById('t-footer-logo').textContent = tx.footerLogo;
+  document.getElementById('t-footer-sub').textContent  = tx.footerSub;
+  document.getElementById('t-print-btn').textContent   = tx.printBtn;
+  document.getElementById('t-reset-btn').textContent   = tx.resetBtn;
+  calc();
 }
 
 function calc(){
-  var flow=parseFloat(document.getElementById('flowRate').value)||0;
-  var b1=parseFloat(document.getElementById('pressure').value);
-  var b2=parseFloat(document.getElementById('inletTemp').value);
-  var b3=parseFloat(document.getElementById('ambientTemp').value);
-  var b4=parseFloat(document.getElementById('dewPoint').value);
-  var cb=b1*b2*b3*b4;
-  var dr=cb>0?flow/cb:0;
+  var tx   = TX[lang];
+  var flow = parseFloat(document.getElementById('flowRate').value)||0;
+  var b1   = parseFloat(document.getElementById('pressure').value);
+  var b2   = parseFloat(document.getElementById('inletTemp').value);
+  var b3   = parseFloat(document.getElementById('ambientTemp').value);
+  var b4   = parseFloat(document.getElementById('dewPoint').value);
+  var cb   = b1*b2*b3*b4;
+  var dr   = cb>0 ? flow/cb : 0;
 
-  document.getElementById('res-flow').textContent=flow.toFixed(2);
-  document.getElementById('res-beta').textContent=cb.toFixed(4);
-  document.getElementById('res-dryer').textContent=dr.toFixed(2);
-  document.getElementById('res-lpm').textContent=(dr*1000).toFixed(0);
+  document.getElementById('res-flow').textContent  = flow.toFixed(2);
+  document.getElementById('res-beta').textContent  = cb.toFixed(4);
+  document.getElementById('res-dryer').textContent = dr.toFixed(2);
+  document.getElementById('res-lpm').textContent   = (dr*1000).toFixed(0);
 
   hl('tb1',b1); hl('tb2',b2); hl('tb3',b3); hl('tb4',b4);
-  buildSum(flow,b1,b2,b3,b4,cb,dr);
 
-  var now=new Date();
-  var ds=pad(now.getDate())+' '+mo[now.getMonth()]+' '+now.getFullYear();
-  var ts=pad(now.getHours())+':'+pad(now.getMinutes());
-  document.getElementById('footer-date').textContent=ds+'  '+ts;
-  document.getElementById('doc-date').textContent='Date: '+ds;
+  var model = document.getElementById('compModel').value || '\u2014';
+  var sp = '<tr class="sep"><td colspan="2"><hr></td></tr>';
+  function r(lb,vl,big){
+    return big
+      ? '<tr class="big"><td class="lb">'+lb+'</td><td>'+vl+'</td></tr>'
+      : '<tr><td class="lb">'+lb+'</td><td class="vl">'+vl+'</td></tr>';
+  }
+  document.getElementById('sum-tbl').innerHTML =
+    r(tx.sModel, model) +
+    r(tx.sFlow,  flow.toFixed(2)+' m\u00B3/min') + sp +
+    r(tx.sPres,  gst('pressure')   +' \u2192 \u03B2='+b1.toFixed(2))+
+    r(tx.sInlet, gst('inletTemp')  +' \u2192 \u03B2='+b2.toFixed(2))+
+    r(tx.sAmb,   gst('ambientTemp')+' \u2192 \u03B2='+b3.toFixed(2))+
+    r(tx.sDew,   gst('dewPoint')   +' \u2192 \u03B2='+b4.toFixed(2))+ sp +
+    r(tx.sComb,  cb.toFixed(4)) + sp +
+    r(tx.sReq,   dr.toFixed(2)+' m\u00B3/min<br>('+(dr*1000).toFixed(0)+' L/min)', true)+
+    r(tx.sType,  tx.sTypeVal)+
+    r(tx.sDewPerf, tx.sDewPerfVal);
+
+  var now = new Date();
+  var ds  = pad(now.getDate())+' '+mo[now.getMonth()]+' '+now.getFullYear();
+  var ts  = pad(now.getHours())+':'+pad(now.getMinutes());
+  document.getElementById('footer-date').textContent = ds+'  '+ts;
+  document.getElementById('doc-date').textContent    = tx.dateLabel + ds;
 }
 
 function hl(tid,val){
-  var rows=document.getElementById(tid).querySelectorAll('tr[data-v]');
-  for(var i=0;i<rows.length;i++){
+  var rows = document.getElementById(tid).querySelectorAll('tr[data-v]');
+  for(var i=0;i<rows.length;i++)
     rows[i].classList.toggle('hl', parseFloat(rows[i].getAttribute('data-v'))===val);
-  }
-}
-
-function r(lb,vl,big){
-  return big
-    ?'<tr class="big"><td class="lb">'+lb+'</td><td>'+vl+'</td></tr>'
-    :'<tr><td class="lb">'+lb+'</td><td class="vl">'+vl+'</td></tr>';
-}
-function sp(){ return '<tr class="sep"><td colspan="2"><hr></td></tr>'; }
-
-function buildSum(flow,b1,b2,b3,b4,cb,dr){
-  var model=document.getElementById('compModel').value||'\u2014';
-  document.getElementById('sum-tbl').innerHTML=
-    r('Compressor Model',model)+
-    r('Compressor Flow Rate',flow.toFixed(2)+' m\u00B3/min')+
-    sp()+
-    r('Pressure (\u03B21)',gst('pressure')+' \u2192 \u03B2='+b1.toFixed(2))+
-    r('Inlet Temp (\u03B22)',gst('inletTemp')+' \u2192 \u03B2='+b2.toFixed(2))+
-    r('Ambient Temp (\u03B23)',gst('ambientTemp')+' \u2192 \u03B2='+b3.toFixed(2))+
-    r('Dew Point (\u03B24)',gst('dewPoint')+' \u2192 \u03B2='+b4.toFixed(2))+
-    sp()+
-    r('Combined Factor',cb.toFixed(4))+
-    sp()+
-    r('REQUIRED DRYER FLOW',dr.toFixed(2)+' m\u00B3/min<br>('+( dr*1000).toFixed(0)+' L/min)',true)+
-    r('Dryer Type','Refrigerant Type')+
-    r('Dew Point Perf.','+2\u00B0C (minimum)');
 }
 
 function resetForm(){
-  document.getElementById('flowRate').value='14.7';
-  document.getElementById('compModel').value='PMV2-75-8';
-  document.getElementById('pressure').value='1.0';
-  document.getElementById('inletTemp').value='1.0';
-  document.getElementById('ambientTemp').value='0.90';
-  document.getElementById('dewPoint').value='1.2';
+  document.getElementById('flowRate').value    = '14.7';
+  document.getElementById('compModel').value   = 'PMV2-75-8';
+  document.getElementById('pressure').value    = '1.0';
+  document.getElementById('inletTemp').value   = '1.0';
+  document.getElementById('ambientTemp').value = '0.90';
+  document.getElementById('dewPoint').value    = '1.2';
   calc();
 }
 

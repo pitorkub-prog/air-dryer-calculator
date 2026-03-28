@@ -2,78 +2,132 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>โปรแกรมเลือกขนาด Air Dryer - KAISHAN KSR</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>KAISHAN Air System Sizing Calculator</title>
 <style>
-:root {
-  --navy:#0b1d3a; --blue:#1353a0; --cyan:#00b4cc;
-  --gold:#f5a623; --green:#00876a; --light:#eaf1fb;
-  --border:#c8d8ef; --muted:#5a7296; --text:#12223d; --white:#fff;
+:root{
+  --navy:#0b1d3a;--blue:#1353a0;--cyan:#00b4cc;--gold:#f5a623;
+  --green:#00876a;--red:#c0392b;--light:#eaf1fb;--border:#c8d8ef;
+  --muted:#5a7296;--text:#12223d;--white:#fff;
   --fh:'Segoe UI','Arial Black',Arial,sans-serif;
   --fb:'Segoe UI',Tahoma,Arial,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:var(--fb);background:#dde6f5;color:var(--text);padding:12px;-webkit-text-size-adjust:100%;}
+body{font-family:var(--fb);background:#d8e4f4;color:var(--text);padding:10px;-webkit-text-size-adjust:100%;}
 
-.lang-bar{display:flex;justify-content:flex-end;max-width:960px;margin:0 auto 8px;gap:6px;}
-.lang-btn{padding:6px 16px;border:2px solid var(--border);border-radius:20px;font-family:var(--fh);font-size:12px;font-weight:700;cursor:pointer;background:var(--white);color:var(--muted);transition:all .2s;}
-.lang-btn.active{background:var(--navy);color:var(--cyan);border-color:var(--navy);}
+/* LANG BAR */
+.lang-bar{display:flex;justify-content:flex-end;max-width:1000px;margin:0 auto 8px;gap:6px;}
+.lbtn{padding:5px 14px;border:2px solid var(--border);border-radius:20px;font-family:var(--fh);font-size:12px;font-weight:700;cursor:pointer;background:var(--white);color:var(--muted);}
+.lbtn.active{background:var(--navy);color:var(--cyan);border-color:var(--navy);}
 
-.page{width:100%;max-width:960px;margin:0 auto;background:var(--white);border-radius:8px;box-shadow:0 4px 24px rgba(10,20,50,0.15);display:flex;flex-direction:column;overflow:hidden;}
+/* PAGE */
+.page{width:100%;max-width:1000px;margin:0 auto;background:var(--white);border-radius:8px;box-shadow:0 4px 28px rgba(10,20,50,0.16);display:flex;flex-direction:column;overflow:hidden;}
 
 /* HEADER */
-.hdr{background:var(--navy);padding:13px 16px 11px;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:8px;}
+.hdr{background:var(--navy);padding:12px 18px 10px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;}
 .hdr-left .tag{font-family:var(--fh);color:var(--cyan);font-size:9px;letter-spacing:2.5px;text-transform:uppercase;opacity:.8;}
-.hdr-left h1{font-family:var(--fh);color:var(--white);font-size:clamp(15px,4vw,21px);font-weight:700;letter-spacing:1px;line-height:1.2;}
+.hdr-left h1{font-family:var(--fh);color:var(--white);font-size:clamp(13px,3.5vw,19px);font-weight:700;letter-spacing:1px;line-height:1.2;}
 .hdr-left h1 span{color:var(--cyan);}
 .hdr-left .sub{color:rgba(255,255,255,0.4);font-size:9px;margin-top:2px;}
 .hdr-right{text-align:right;}
-.hdr-right .doc-no{font-family:var(--fh);color:var(--cyan);font-size:10px;letter-spacing:1px;font-weight:600;}
-.hdr-right .doc-date{color:rgba(255,255,255,0.35);font-size:9px;margin-top:2px;}
+.hdr-right img{height:44px;filter:brightness(0) invert(1);opacity:.9;}
+.hdr-right .doc-no{font-family:var(--fh);color:var(--cyan);font-size:10px;letter-spacing:1px;font-weight:600;margin-top:4px;}
+.hdr-right .doc-date{color:rgba(255,255,255,0.35);font-size:9px;margin-top:1px;}
 
 /* BODY */
-.body{padding:11px 14px 10px;display:flex;flex-direction:column;gap:9px;}
+.body{padding:10px 13px 9px;display:flex;flex-direction:column;gap:8px;}
 
 /* CARD */
 .card{border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-.card-head{background:var(--navy);padding:5px 12px;display:flex;align-items:center;gap:7px;}
-.card-head span{font-family:var(--fh);color:var(--cyan);font-size:9.5px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
-.card-head .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0;}
-.card-body{padding:9px 11px;}
+.ch{background:var(--navy);padding:5px 12px;display:flex;align-items:center;gap:7px;}
+.ch span{font-family:var(--fh);color:var(--cyan);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+.ch .dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);flex-shrink:0;}
+.cb{padding:8px 11px;}
 
 /* INPUTS */
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-.field{display:flex;flex-direction:column;gap:3px;}
-.field label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;}
+.field{display:flex;flex-direction:column;gap:2px;}
+.field label{font-size:8.5px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;}
 .fr{display:flex;}
-.fr input,.fr select{flex:1;min-width:0;padding:7px 8px;border:1.5px solid var(--border);border-radius:5px 0 0 5px;font-family:var(--fh);font-size:clamp(11px,3vw,13px);font-weight:700;color:var(--text);background:#f5f8ff;outline:none;-webkit-appearance:none;appearance:none;}
+.fr input,.fr select{flex:1;min-width:0;padding:6px 7px;border:1.5px solid var(--border);border-radius:5px 0 0 5px;font-family:var(--fh);font-size:clamp(11px,2.5vw,13px);font-weight:700;color:var(--text);background:#f5f8ff;outline:none;-webkit-appearance:none;appearance:none;}
 .fr input:focus,.fr select:focus{border-color:var(--cyan);background:#fff;}
-.fr .u{background:var(--light);border:1.5px solid var(--border);border-left:none;border-radius:0 5px 5px 0;padding:7px 7px;font-size:9px;font-weight:700;color:var(--blue);white-space:nowrap;display:flex;align-items:center;}
-.fr select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a7296'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;padding-right:24px;}
-.fr-full input{flex:1;padding:7px 8px;border:1.5px solid var(--border);border-radius:5px;font-family:var(--fh);font-size:clamp(11px,3vw,13px);font-weight:700;color:var(--text);background:#f5f8ff;outline:none;width:100%;}
+.fr .u{background:var(--light);border:1.5px solid var(--border);border-left:none;border-radius:0 5px 5px 0;padding:6px 7px;font-size:9px;font-weight:700;color:var(--blue);white-space:nowrap;display:flex;align-items:center;}
+.fr select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a7296'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 7px center;padding-right:22px;}
+.fr-full input{flex:1;padding:6px 7px;border:1.5px solid var(--border);border-radius:5px;font-family:var(--fh);font-size:clamp(11px,2.5vw,13px);font-weight:700;color:var(--text);background:#f5f8ff;outline:none;width:100%;}
 .fr-full input:focus{border-color:var(--cyan);background:#fff;}
+.sf-field label{color:var(--gold)!important;}
+.sf-field .fr select{border-color:var(--gold);background:#fffbf0;}
 
-/* RESULT STRIP */
-.rstrip{background:linear-gradient(90deg,var(--navy) 0%,#0f2a50 100%);border-radius:6px;padding:11px 14px;display:flex;align-items:center;flex-wrap:nowrap;gap:2px;}
+/* FORMULA STRIP */
+.fstrip{background:linear-gradient(90deg,var(--navy) 0%,#0f2a50 100%);border-radius:6px;overflow:hidden;}
+.frow{display:flex;align-items:center;padding:9px 13px;}
+.frow2{background:rgba(0,180,204,0.07);border-top:1px solid rgba(255,255,255,0.06);}
 .ri{flex:1;min-width:0;text-align:center;position:relative;}
-.ri+.ri::before{content:'';position:absolute;left:0;top:15%;bottom:15%;width:1px;background:rgba(255,255,255,0.1);}
-.rl{font-family:var(--fh);font-size:clamp(7px,1.5vw,9px);letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:2px;}
-.rv{font-family:var(--fh);font-size:clamp(17px,5vw,26px);font-weight:700;line-height:1;}
-.rv.c{color:#00e5ff;} .rv.g{color:var(--gold);} .rv.gr{color:#00e5b0;} .rv.b{color:#a8d8ff;font-size:clamp(13px,4vw,19px);}
-.ru{font-size:clamp(8px,2vw,10px);color:rgba(255,255,255,0.3);margin-top:1px;}
-.op{color:rgba(255,255,255,0.2);font-size:clamp(14px,3vw,20px);padding:0 1px;flex-shrink:0;}
+.ri+.ri::before{content:'';position:absolute;left:0;top:15%;bottom:15%;width:1px;background:rgba(255,255,255,0.09);}
+.rl{font-family:var(--fh);font-size:clamp(6px,1.2vw,8px);letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:2px;}
+.rv{font-family:var(--fh);font-size:clamp(15px,4vw,24px);font-weight:700;line-height:1;}
+.rv.c{color:#00e5ff;} .rv.g{color:var(--gold);} .rv.gr{color:#00e5b0;}
+.rv.gold2{color:#ffd54f;} .rv.final{color:#69f0ae;font-size:clamp(17px,5vw,27px);}
+.ru{font-size:clamp(7px,1.5vw,9px);color:rgba(255,255,255,0.28);margin-top:1px;}
+.op{color:rgba(255,255,255,0.18);font-size:clamp(13px,3vw,19px);padding:0 1px;flex-shrink:0;}
+.rowlbl{font-family:var(--fh);font-size:7.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.28);writing-mode:vertical-rl;transform:rotate(180deg);padding:0 5px;flex-shrink:0;}
+.rowlbl.r1{color:rgba(255,200,0,0.5);} .rowlbl.r2{color:rgba(0,229,255,0.5);}
+
+/* RESULTS GRID - 3 cols for dryer/separator/adsorption */
+.results-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+
+/* RESULT CARD */
+.rcard{border-radius:6px;overflow:hidden;border:2px solid;}
+.rcard.ksr{border-color:var(--cyan);background:linear-gradient(135deg,#0b1d3a,#0d2a50);}
+.rcard.ksaf{border-color:#2ecc71;background:linear-gradient(135deg,#0a2010,#0d3020);}
+.rcard.ksyf{border-color:#e67e22;background:linear-gradient(135deg,#1a0e00,#2a1800);}
+.rcard.ksrz{border-color:#9b59b6;background:linear-gradient(135deg,#110a1a,#1a0f28);}
+.rcard-head{padding:5px 12px;display:flex;align-items:center;gap:7px;}
+.rcard.ksr .rcard-head{background:var(--cyan);}
+.rcard.ksaf .rcard-head{background:#2ecc71;}
+.rcard.ksyf .rcard-head{background:#e67e22;}
+.rcard.ksrz .rcard-head{background:#9b59b6;}
+.rcard-head span{font-family:var(--fh);color:var(--navy);font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;}
+.rcard-body{padding:8px 11px;}
+
+/* MODEL DISPLAY */
+.model-main{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.model-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+.ksr .model-icon{background:rgba(0,180,212,0.15);}
+.ksaf .model-icon{background:rgba(46,204,113,0.15);}
+.ksyf .model-icon{background:rgba(230,126,34,0.15);}
+.ksrz .model-icon{background:rgba(155,89,182,0.15);}
+.model-name{font-family:var(--fh);font-size:clamp(14px,3vw,20px);font-weight:700;line-height:1;}
+.ksr .model-name{color:#00e5ff;} .ksaf .model-name{color:#2ecc71;}
+.ksyf .model-name{color:#f39c12;} .ksrz .model-name{color:#c39bd3;}
+.model-sub{font-size:8.5px;color:rgba(255,255,255,0.4);margin-top:2px;}
+.specs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-top:4px;}
+.spec-item{padding:3px 6px;background:rgba(255,255,255,0.04);border-radius:3px;}
+.spec-lbl{font-size:7.5px;color:rgba(255,255,255,0.35);letter-spacing:.5px;text-transform:uppercase;}
+.spec-val{font-family:var(--fh);font-size:11px;font-weight:700;color:rgba(255,255,255,0.8);}
+.match-badge{margin-top:6px;padding:4px 8px;border-radius:3px;font-size:9px;line-height:1.4;}
+.ksr .match-badge{background:rgba(0,180,212,0.1);border-left:2px solid var(--cyan);color:rgba(0,229,255,0.7);}
+.ksaf .match-badge{background:rgba(46,204,113,0.08);border-left:2px solid #2ecc71;color:rgba(46,204,113,0.8);}
+.ksyf .match-badge{background:rgba(230,126,34,0.08);border-left:2px solid #e67e22;color:rgba(243,156,18,0.8);}
+.ksrz .match-badge{background:rgba(155,89,182,0.08);border-left:2px solid #9b59b6;color:rgba(195,155,211,0.8);}
+.no-match-r{text-align:center;padding:20px 10px;font-family:var(--fh);font-size:11px;color:rgba(255,255,255,0.35);}
+
+/* FILTER GRADE TABLE */
+.fgrade-table{width:100%;border-collapse:collapse;margin-top:6px;font-size:9px;}
+.fgrade-table th{background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.5);padding:3px 5px;text-align:center;font-size:8px;letter-spacing:.5px;text-transform:uppercase;}
+.fgrade-table td{padding:3px 5px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.04);color:rgba(255,255,255,0.7);}
+.fgrade-table .grade-sel td{background:rgba(46,204,113,0.12);color:#2ecc71;font-weight:700;}
+.fgrade-table .grade-grade{font-family:var(--fh);font-size:11px;font-weight:700;}
 
 /* LOWER */
-.lower{display:flex;gap:9px;}
-.lower-left{flex:1.3;min-width:0;} .lower-right{flex:1;min-width:0;}
-
-/* BETA TABLES */
+.lower{display:flex;gap:8px;}
+.lower-left{flex:1.25;min-width:0;} .lower-right{flex:1;min-width:0;}
 .four{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
 .bt{width:100%;border-collapse:collapse;}
-.bt .th1{background:var(--blue);color:var(--white);font-family:var(--fh);font-size:clamp(7.5px,1.5vw,9.5px);letter-spacing:.5px;text-transform:uppercase;padding:5px 4px;text-align:center;font-weight:700;}
-.bt .th2{background:#e8f0fb;color:var(--muted);font-size:clamp(7px,1.4vw,9px);font-weight:700;padding:3px 4px;text-align:center;}
-.bt td{padding:clamp(3px,.8vw,4.5px) 4px;text-align:center;border-bottom:1px solid #edf2fb;color:var(--text);font-size:clamp(9px,1.8vw,10.5px);}
+.bt .th1{background:var(--blue);color:var(--white);font-family:var(--fh);font-size:clamp(7px,1.3vw,9px);text-transform:uppercase;padding:4px 3px;text-align:center;font-weight:700;}
+.bt .th2{background:#e8f0fb;color:var(--muted);font-size:7.5px;font-weight:700;padding:3px 3px;text-align:center;}
+.bt td{padding:clamp(2.5px,.7vw,4px) 3px;text-align:center;border-bottom:1px solid #edf2fb;color:var(--text);font-size:clamp(8px,1.6vw,10px);}
 .bt td:first-child{color:var(--muted);font-weight:600;}
 .bt tr:nth-child(even) td{background:#f8faff;}
 .bt .hl td{background:#fff3e0!important;color:#bf6000!important;font-weight:700;}
@@ -81,100 +135,39 @@ body{font-family:var(--fb);background:#dde6f5;color:var(--text);padding:12px;-we
 
 /* SUMMARY */
 .st{width:100%;border-collapse:collapse;}
-.st tr td{padding:4.5px 9px;border-bottom:1px solid #eef2f9;vertical-align:middle;}
-.st .lb{color:var(--muted);font-weight:700;width:50%;font-size:clamp(8.5px,2vw,10px);}
-.st .vl{color:var(--text);font-size:clamp(8.5px,2vw,10.5px);}
-.st .big td{background:#e6f4f1;font-family:var(--fh);font-size:clamp(11px,3vw,14px);font-weight:700;color:var(--green);padding:6px 9px;}
-.st .big td.lb{color:var(--green);font-size:clamp(8px,2vw,9.5px);}
-.st .sep td{padding:1px;}
-.st .sep td hr{border:none;border-top:1px dashed var(--border);}
-
-/* ── MODEL RECOMMENDATION CARD ── */
-.model-card{
-  background:linear-gradient(135deg,#0b1d3a 0%,#0d2a50 100%);
-  border-radius:6px;
-  border:2px solid var(--cyan);
-  overflow:hidden;
-}
-.model-card-head{
-  background:var(--cyan);
-  padding:6px 14px;
-  display:flex;align-items:center;gap:8px;
-}
-.model-card-head span{
-  font-family:var(--fh);color:var(--navy);font-size:10px;
-  letter-spacing:2px;text-transform:uppercase;font-weight:700;
-}
-.model-card-body{padding:10px 14px;}
-.model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
-.model-item{
-  padding:8px 10px;
-  border-right:1px solid rgba(255,255,255,0.08);
-  text-align:center;
-}
-.model-item:last-child{border-right:none;}
-.model-item .ml{font-family:var(--fh);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:3px;}
-.model-item .mv{font-family:var(--fh);font-size:clamp(14px,3.5vw,22px);font-weight:700;color:#00e5ff;line-height:1;}
-.model-item .ms{font-size:9px;color:rgba(255,255,255,0.35);margin-top:2px;}
-.model-specs{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
-  border-top:1px solid rgba(255,255,255,0.08);
-  margin-top:8px;padding-top:8px;
-}
-.ms-item{text-align:center;padding:4px 6px;border-right:1px solid rgba(255,255,255,0.06);}
-.ms-item:last-child{border-right:none;}
-.ms-item .msl{font-size:8px;color:rgba(255,255,255,0.35);margin-bottom:2px;letter-spacing:.5px;}
-.ms-item .msv{font-family:var(--fh);font-size:11px;font-weight:700;color:rgba(255,255,255,0.8);}
-.no-match{
-  text-align:center;padding:14px;
-  font-family:var(--fh);font-size:12px;
-  color:rgba(255,255,255,0.5);
-}
-.match-note{
-  margin-top:8px;padding:6px 10px;
-  background:rgba(0,180,204,0.08);
-  border-radius:4px;border-left:3px solid var(--cyan);
-  font-size:9.5px;color:rgba(255,255,255,0.55);
-  line-height:1.5;
-}
-
-/* KAISHAN BRAND */
-.brand-row{display:flex;align-items:center;gap:6px;margin-bottom:8px;}
-.brand-badge{
-  background:var(--cyan);color:var(--navy);
-  font-family:var(--fh);font-size:11px;font-weight:700;
-  padding:2px 10px;border-radius:3px;letter-spacing:1px;
-}
-.brand-sub{font-size:9px;color:rgba(255,255,255,0.4);}
+.st tr td{padding:4px 8px;border-bottom:1px solid #eef2f9;vertical-align:middle;}
+.st .lb{color:var(--muted);font-weight:700;width:52%;font-size:clamp(8px,1.7vw,9.5px);}
+.st .vl{color:var(--text);font-size:clamp(8px,1.7vw,10px);}
+.st .big td{background:#e6f4f1;font-family:var(--fh);font-size:clamp(10px,2.5vw,13px);font-weight:700;color:var(--green);padding:5px 8px;}
+.st .big td.lb{color:var(--green);font-size:clamp(7.5px,1.7vw,9px);}
+.st .sep td{padding:1px;} .st .sep td hr{border:none;border-top:1px dashed var(--border);}
+.st .warn td{background:#fff8e1;} .st .warn td.lb{color:#e65100;}
+.st .hi td{background:#e8f5e9;} .st .hi td.lb{color:#1b5e20;}
 
 /* FOOTER */
 .footer{border-top:1px solid var(--border);padding:6px 14px;display:flex;justify-content:space-between;align-items:center;background:#f7f9fe;flex-wrap:wrap;gap:4px;}
-.footer-logo{font-family:var(--fh);font-size:11px;font-weight:700;color:var(--blue);letter-spacing:1px;}
-.footer-l{font-size:9px;color:var(--muted);}
-.footer-r{font-size:9px;color:var(--muted);text-align:right;}
+.footer-logo{font-family:var(--fh);font-size:10px;font-weight:700;color:var(--blue);letter-spacing:1px;}
+.footer-l{font-size:8.5px;color:var(--muted);}
+.footer-r{font-size:8.5px;color:var(--muted);text-align:right;}
 
-/* BUTTONS */
-.btns{text-align:center;margin:14px 0 4px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
-.pb{background:var(--navy);color:var(--cyan);border:none;border-radius:6px;padding:11px 26px;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;}
-.pb:hover{opacity:.85;}
-.rb{background:#eef2f9;color:var(--muted);border:1.5px solid var(--border);border-radius:6px;padding:11px 20px;font-family:var(--fh);font-size:13px;font-weight:600;cursor:pointer;}
-.rb:hover{background:#e2e8f4;}
+/* BTNS */
+.btns{text-align:center;margin:12px 0 4px;display:flex;justify-content:center;gap:9px;flex-wrap:wrap;}
+.pb{background:var(--navy);color:var(--cyan);border:none;border-radius:6px;padding:10px 24px;font-family:var(--fh);font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;}
+.rb{background:#eef2f9;color:var(--muted);border:1.5px solid var(--border);border-radius:6px;padding:10px 18px;font-family:var(--fh);font-size:13px;font-weight:600;cursor:pointer;}
 
 /* MOBILE */
-@media(max-width:620px){
-  body{padding:8px;}
-  .g4{grid-template-columns:repeat(2,1fr);}
+@media(max-width:680px){
+  body{padding:7px;}
+  .g5{grid-template-columns:repeat(2,1fr);}
+  .results-grid{grid-template-columns:1fr;}
   .lower{flex-direction:column;}
-  .lower-left,.lower-right{flex:none;width:100%;}
   .four{grid-template-columns:repeat(2,1fr);}
-  .rstrip{flex-wrap:wrap;gap:6px;padding:10px;}
-  .ri{min-width:40%;flex:none;}
+  .frow{flex-wrap:wrap;gap:5px;padding:8px;}
+  .ri{min-width:35%;flex:none;}
   .ri+.ri::before{display:none;}
-  .op{display:none;}
-  .model-grid{grid-template-columns:1fr 1fr;}
-  .model-specs{grid-template-columns:repeat(2,1fr);}
+  .op,.rowlbl{display:none;}
   .btns{flex-direction:column;align-items:center;}
-  .pb,.rb{width:100%;max-width:320px;}
+  .pb,.rb{width:100%;max-width:300px;}
   .lang-bar{justify-content:center;}
 }
 @media(max-width:380px){.g2{grid-template-columns:1fr;}}
@@ -185,304 +178,374 @@ body{font-family:var(--fb);background:#dde6f5;color:var(--text);padding:12px;-we
   body{background:white!important;padding:0!important;}
   .page{width:210mm!important;max-width:210mm!important;min-height:297mm!important;border-radius:0!important;box-shadow:none!important;margin:0!important;}
   .btns,.lang-bar{display:none!important;}
-  .g4,.four{grid-template-columns:repeat(4,1fr)!important;}
+  .g5{grid-template-columns:repeat(5,1fr)!important;}
+  .results-grid{grid-template-columns:repeat(3,1fr)!important;}
+  .four{grid-template-columns:repeat(4,1fr)!important;}
   .lower{flex-direction:row!important;}
-  .lower-left{flex:1.3!important;} .lower-right{flex:1!important;}
-  .rstrip{flex-wrap:nowrap!important;}
+  .lower-left{flex:1.25!important;} .lower-right{flex:1!important;}
+  .frow{flex-wrap:nowrap!important;}
   .ri{min-width:0!important;flex:1!important;}
-  .op{display:block!important;}
-  .model-grid{grid-template-columns:repeat(3,1fr)!important;}
-  .model-specs{grid-template-columns:repeat(4,1fr)!important;}
-  .hdr,.card-head,.rstrip,.bt .th1,.bt .th2,.footer,
-  .bt .hl td,.bt tr:nth-child(even) td,.st .big td,
-  .model-card,.model-card-head{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  .op,.rowlbl{display:block!important;}
+  .hdr,.ch,.fstrip,.bt .th1,.bt .th2,.footer,
+  .bt .hl td,.bt tr:nth-child(even) td,.st .big td,.st .warn td,.st .hi td,
+  .rcard,.rcard-head{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
 }
 </style>
 </head>
 <body>
-
 <div class="lang-bar">
-  <button class="lang-btn active" id="btn-th" onclick="setLang('th')">🇹🇭 ภาษาไทย</button>
-  <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
+  <button class="lbtn active" id="btn-th" onclick="setLang('th')">🇹🇭 ภาษาไทย</button>
+  <button class="lbtn" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
 </div>
 
 <div class="page">
 
-  <!-- HEADER -->
-  <div class="hdr">
-    <div class="hdr-left">
-      <div class="tag" id="t-doctag">เอกสารทางวิศวกรรม</div>
-      <h1 id="t-title">โปรแกรมเลือกขนาด <span>AIR DRYER</span></h1>
-      <div class="sub" id="t-sub">ชนิด Refrigerant · วิธีคำนวณด้วยค่า Correction Factor · KAISHAN KSR Series</div>
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="tag" id="t-doctag">เอกสารทางวิศวกรรม — มาตรฐานโรงงาน</div>
+    <h1 id="t-title">ระบบอากาศอัด <span>KAISHAN</span> — เลือกขนาดอัตโนมัติ</h1>
+    <div class="sub" id="t-sub">KSR Air Dryer · KSAF Filter · KSYF Separator · KSR-MZ Adsorption · Safety Factor</div>
+  </div>
+  <div class="hdr-right">
+    <img src="data:image/jpeg;base64,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" alt="KAISHAN">
+    <div class="doc-no">DOC NO.&nbsp; AD-PRO-003</div>
+    <div class="doc-date" id="doc-date">&mdash;</div>
+  </div>
+</div>
+
+<div class="body">
+
+<!-- INPUT -->
+<div class="card">
+  <div class="ch"><div class="dot"></div><span id="t-input">พารามิเตอร์ระบบ</span></div>
+  <div class="cb">
+    <div class="g2" style="margin-bottom:7px;">
+      <div class="field">
+        <label id="t-fl">อัตราการไหล Air Compressor</label>
+        <div class="fr"><input type="number" id="flowRate" value="14.7" step="0.1" min="0.1" oninput="calc()" inputmode="decimal"><div class="u">m³/min</div></div>
+      </div>
+      <div class="field">
+        <label id="t-ml">รุ่น / หมายเลขเครื่อง</label>
+        <div class="fr-full"><input type="text" id="compModel" value="PMV2-75-8"></div>
+      </div>
     </div>
-    <div class="hdr-right">
-      <div class="doc-no">DOC NO.&nbsp; AD-CALC-001</div>
-      <div class="doc-date" id="doc-date">&mdash;</div>
+    <div class="g5">
+      <div class="field"><label id="t-pl">ความดัน (β1)</label>
+        <div class="fr"><select id="pressure" onchange="calc()">
+          <option value="0.65">3 bar</option><option value="0.8">4 bar</option>
+          <option value="0.88">5 bar</option><option value="0.92">6 bar</option>
+          <option value="1.0" selected>7 bar</option><option value="1.04">8 bar</option>
+          <option value="1.07">9 bar</option><option value="1.12">10 bar</option>
+          <option value="1.16">13 bar</option><option value="1.19">16 bar</option>
+        </select><div class="u">bar</div></div>
+      </div>
+      <div class="field"><label id="t-il">อุณหภูมิขาเข้า (β2)</label>
+        <div class="fr"><select id="inletTemp" onchange="calc()">
+          <option value="1.25">45°C</option><option value="1.15">50°C</option>
+          <option value="1.1">55°C</option><option value="1.05">60°C</option>
+          <option value="1.0" selected>65°C</option><option value="0.95">70°C</option>
+          <option value="0.88">75°C</option><option value="0.80">80°C</option>
+        </select><div class="u">°C</div></div>
+      </div>
+      <div class="field"><label id="t-al">อุณหภูมิแวดล้อม (β3)</label>
+        <div class="fr"><select id="ambientTemp" onchange="calc()">
+          <option value="1.2">25°C</option><option value="1.03">30°C</option>
+          <option value="1.0">32°C</option><option value="1.0">35°C</option>
+          <option value="0.90" selected>38°C</option><option value="0.85">40°C</option>
+          <option value="0.71">45°C</option><option value="0.60">50°C</option>
+        </select><div class="u">°C</div></div>
+      </div>
+      <div class="field"><label id="t-dl">จุดน้ำค้าง (β4)</label>
+        <div class="fr"><select id="dewPoint" onchange="calc()">
+          <option value="0.85">-2°C</option><option value="0.9">0°C</option>
+          <option value="1.0">+3°C</option><option value="1.1">+5°C</option>
+          <option value="1.15">+7°C</option><option value="1.2" selected>+10°C</option>
+        </select><div class="u">°C</div></div>
+      </div>
+      <div class="field sf-field"><label id="t-sl">⚠ Safety Factor (SF)</label>
+        <div class="fr"><select id="sfactor" onchange="calc()">
+          <option value="1.15">1.15 — Conservative</option>
+          <option value="1.20" selected>1.20 — Standard ★</option>
+          <option value="1.25">1.25 — Heavy Duty</option>
+        </select><div class="u" style="background:#fff8e1;border-color:#f5a623;color:#b35c00;">SF</div></div>
+      </div>
     </div>
   </div>
+</div>
 
-  <div class="body">
+<!-- FORMULA STRIP -->
+<div class="fstrip">
+  <div class="frow">
+    <div class="rowlbl r1" id="t-row1">สูตรพื้นฐาน</div>
+    <div class="ri"><div class="rl" id="t-r1">อัตราไหล Compressor</div><div class="rv c" id="res-flow">14.70</div><div class="ru">m³/min</div></div>
+    <div class="op">÷</div>
+    <div class="ri"><div class="rl">β1×β2×β3×β4</div><div class="rv g" id="res-beta">—</div><div class="ru" id="t-r2">ค่าปรับแก้รวม</div></div>
+    <div class="op">=</div>
+    <div class="ri"><div class="rl" id="t-r3">Flow พื้นฐาน</div><div class="rv gr" id="res-base">—</div><div class="ru">m³/min</div></div>
+  </div>
+  <div class="frow frow2">
+    <div class="rowlbl r2" id="t-row2">Flow + SF</div>
+    <div class="ri"><div class="rl" id="t-r3b">Flow พื้นฐาน</div><div class="rv gold2" id="res-base2">—</div><div class="ru">m³/min</div></div>
+    <div class="op">×</div>
+    <div class="ri"><div class="rl" id="t-r4">Safety Factor</div><div class="rv" style="color:#ffd54f;" id="res-sf">—</div><div class="ru" id="t-r4b">SF=1.20</div></div>
+    <div class="op">=</div>
+    <div class="ri"><div class="rl" id="t-r5">✅ Flow ที่ต้องการ</div><div class="rv final" id="res-final">—</div><div class="ru">m³/min</div></div>
+    <div class="ri" style="max-width:100px;"><div class="rl" id="t-r6">เทียบเท่า</div><div class="rv" style="color:#a8d8ff;font-size:clamp(12px,3vw,17px);" id="res-lpm">—</div><div class="ru">L/min</div></div>
+  </div>
+</div>
 
-    <!-- INPUT CARD -->
-    <div class="card">
-      <div class="card-head"><div class="dot"></div><span id="t-input">พารามิเตอร์ระบบ</span></div>
-      <div class="card-body">
-        <div class="g2" style="margin-bottom:8px;">
-          <div class="field">
-            <label id="t-flow-lbl">อัตราการไหลของ Air Compressor</label>
-            <div class="fr">
-              <input type="number" id="flowRate" value="14.7" step="0.1" min="0.1" oninput="calc()" inputmode="decimal">
-              <div class="u">m&sup3;/min</div>
-            </div>
-          </div>
-          <div class="field">
-            <label id="t-model-lbl">รุ่น / หมายเลขเครื่อง</label>
-            <div class="fr-full"><input type="text" id="compModel" value="PMV2-75-8"></div>
-          </div>
-        </div>
-        <div class="g4">
-          <div class="field">
-            <label id="t-p-lbl">ความดัน (&#946;1)</label>
-            <div class="fr">
-              <select id="pressure" onchange="calc()">
-                <option value="0.65">3 bar</option><option value="0.8">4 bar</option>
-                <option value="0.88">5 bar</option><option value="0.92">6 bar</option>
-                <option value="1.0" selected>7 bar</option><option value="1.04">8 bar</option>
-                <option value="1.07">9 bar</option><option value="1.12">10 bar</option>
-                <option value="1.16">13 bar</option><option value="1.19">16 bar</option>
-              </select><div class="u">bar</div>
-            </div>
-          </div>
-          <div class="field">
-            <label id="t-it-lbl">อุณหภูมิขาเข้า (&#946;2)</label>
-            <div class="fr">
-              <select id="inletTemp" onchange="calc()">
-                <option value="1.25">45&deg;C</option><option value="1.15">50&deg;C</option>
-                <option value="1.1">55&deg;C</option><option value="1.05">60&deg;C</option>
-                <option value="1.0" selected>65&deg;C</option><option value="0.95">70&deg;C</option>
-                <option value="0.88">75&deg;C</option><option value="0.80">80&deg;C</option>
-              </select><div class="u">&deg;C</div>
-            </div>
-          </div>
-          <div class="field">
-            <label id="t-at-lbl">อุณหภูมิแวดล้อม (&#946;3)</label>
-            <div class="fr">
-              <select id="ambientTemp" onchange="calc()">
-                <option value="1.2">25&deg;C</option><option value="1.03">30&deg;C</option>
-                <option value="1.0">32&deg;C</option><option value="1.0">35&deg;C</option>
-                <option value="0.90" selected>38&deg;C</option><option value="0.85">40&deg;C</option>
-                <option value="0.71">45&deg;C</option><option value="0.60">50&deg;C</option>
-              </select><div class="u">&deg;C</div>
-            </div>
-          </div>
-          <div class="field">
-            <label id="t-dp-lbl">จุดน้ำค้าง (&#946;4)</label>
-            <div class="fr">
-              <select id="dewPoint" onchange="calc()">
-                <option value="0.85">-2&deg;C</option><option value="0.9">0&deg;C</option>
-                <option value="1.0">+3&deg;C</option><option value="1.1">+5&deg;C</option>
-                <option value="1.15">+7&deg;C</option><option value="1.2" selected>+10&deg;C</option>
-              </select><div class="u">&deg;C</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- RESULTS GRID: 3 main products -->
+<div class="results-grid">
 
-    <!-- RESULT STRIP -->
-    <div class="rstrip">
-      <div class="ri">
-        <div class="rl" id="t-r1">อัตราไหล Compressor</div>
-        <div class="rv c" id="res-flow">14.70</div>
-        <div class="ru">m&sup3;/min</div>
-      </div>
-      <div class="op">&divide;</div>
-      <div class="ri">
-        <div class="rl">&#946;1&times;&#946;2&times;&#946;3&times;&#946;4</div>
-        <div class="rv g" id="res-beta">&mdash;</div>
-        <div class="ru" id="t-r2">ค่าปรับแก้รวม</div>
-      </div>
-      <div class="op">=</div>
-      <div class="ri">
-        <div class="rl" id="t-r3">อัตราไหล Air Dryer ที่ต้องการ</div>
-        <div class="rv gr" id="res-dryer">&mdash;</div>
-        <div class="ru">m&sup3;/min</div>
-      </div>
-      <div class="ri" style="max-width:120px;">
-        <div class="rl" id="t-r4">เทียบเท่า</div>
-        <div class="rv b" id="res-lpm">&mdash;</div>
-        <div class="ru">L/min</div>
-      </div>
-    </div>
-
-    <!-- MODEL RECOMMENDATION -->
-    <div class="model-card">
-      <div class="model-card-head">
-        <div class="dot" style="background:var(--navy);"></div>
-        <span id="t-rec">&#11088; รุ่นแนะนำ KAISHAN KSR Series</span>
-      </div>
-      <div class="model-card-body" id="model-body">
-        <div class="no-match" id="t-nomatch">กำลังคำนวณ...</div>
-      </div>
-    </div>
-
-    <!-- LOWER: Tables + Summary -->
-    <div class="lower">
-      <div class="lower-left">
-        <div class="card" style="height:100%;">
-          <div class="card-head"><div class="dot"></div><span id="t-reftbl">ตารางค่า Correction Factor อ้างอิง</span></div>
-          <div class="card-body" style="padding:6px 8px;">
-            <div class="four">
-              <table class="bt" id="tb1">
-                <tr><td class="th1" colspan="2" id="t-b1h">&#946;1 ความดัน</td></tr>
-                <tr><td class="th2">bar</td><td class="th2">&#946;1</td></tr>
-                <tr data-v="0.65"><td>3</td><td>0.65</td></tr><tr data-v="0.8"><td>4</td><td>0.80</td></tr>
-                <tr data-v="0.88"><td>5</td><td>0.88</td></tr><tr data-v="0.92"><td>6</td><td>0.92</td></tr>
-                <tr data-v="1.0"><td>7</td><td>1.00</td></tr><tr data-v="1.04"><td>8</td><td>1.04</td></tr>
-                <tr data-v="1.07"><td>9</td><td>1.07</td></tr><tr data-v="1.12"><td>10</td><td>1.12</td></tr>
-                <tr data-v="1.16"><td>13</td><td>1.16</td></tr><tr data-v="1.19"><td>16</td><td>1.19</td></tr>
-              </table>
-              <table class="bt" id="tb2">
-                <tr><td class="th1" colspan="2" id="t-b2h">&#946;2 อุณหภูมิขาเข้า</td></tr>
-                <tr><td class="th2">&deg;C</td><td class="th2">&#946;2</td></tr>
-                <tr data-v="1.25"><td>45</td><td>1.25</td></tr><tr data-v="1.15"><td>50</td><td>1.15</td></tr>
-                <tr data-v="1.1"><td>55</td><td>1.10</td></tr><tr data-v="1.05"><td>60</td><td>1.05</td></tr>
-                <tr data-v="1.0"><td>65</td><td>1.00</td></tr><tr data-v="0.95"><td>70</td><td>0.95</td></tr>
-                <tr data-v="0.88"><td>75</td><td>0.88</td></tr><tr data-v="0.80"><td>80</td><td>0.80</td></tr>
-              </table>
-              <table class="bt" id="tb3">
-                <tr><td class="th1" colspan="2" id="t-b3h">&#946;3 อุณหภูมิแวดล้อม</td></tr>
-                <tr><td class="th2">&deg;C</td><td class="th2">&#946;3</td></tr>
-                <tr data-v="1.2"><td>25</td><td>1.20</td></tr><tr data-v="1.03"><td>30</td><td>1.03</td></tr>
-                <tr data-v="1.0"><td>32</td><td>1.00</td></tr><tr data-v="1.0"><td>35</td><td>1.00</td></tr>
-                <tr data-v="0.90"><td>38</td><td>0.90</td></tr><tr data-v="0.85"><td>40</td><td>0.85</td></tr>
-                <tr data-v="0.71"><td>45</td><td>0.71</td></tr><tr data-v="0.60"><td>50</td><td>0.60</td></tr>
-              </table>
-              <table class="bt" id="tb4">
-                <tr><td class="th1" colspan="2" id="t-b4h">&#946;4 จุดน้ำค้าง</td></tr>
-                <tr><td class="th2">&deg;C</td><td class="th2">&#946;4</td></tr>
-                <tr data-v="0.85"><td>-2</td><td>0.85</td></tr><tr data-v="0.9"><td>0</td><td>0.90</td></tr>
-                <tr data-v="1.0"><td>+3</td><td>1.00</td></tr><tr data-v="1.1"><td>+5</td><td>1.10</td></tr>
-                <tr data-v="1.15"><td>+7</td><td>1.15</td></tr><tr data-v="1.2"><td>+10</td><td>1.20</td></tr>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="lower-right">
-        <div class="card" style="height:100%;">
-          <div class="card-head"><div class="dot"></div><span id="t-summary">สรุปการคัดเลือก</span></div>
-          <div class="card-body" style="padding:0;">
-            <table class="st" id="sum-tbl"></table>
-          </div>
-        </div>
-      </div>
-    </div>
-
+  <!-- KSR AIR DRYER -->
+  <div class="rcard ksr">
+    <div class="rcard-head"><span id="t-ksr-head">🌬️ KSR — Refrigerant Air Dryer</span></div>
+    <div class="rcard-body" id="ksr-body"><div class="no-match-r">กำลังคำนวณ...</div></div>
   </div>
 
-  <!-- FOOTER -->
-  <div class="footer">
-    <div class="footer-l">
-      <div class="footer-logo" id="t-footer-logo">โปรแกรมเลือกขนาด AIR DRYER · KAISHAN KSR</div>
-      <div style="margin-top:2px;" id="t-footer-sub">Refrigerant Type · Correction Factor Method · Gen 6 Super Cold Series</div>
-    </div>
-    <div class="footer-r">
-      <div id="footer-date">&mdash;</div>
-      <div style="margin-top:2px;">Q<sub>dryer</sub> = Q<sub>comp</sub> &divide; (&#946;1&times;&#946;2&times;&#946;3&times;&#946;4)</div>
-    </div>
+  <!-- KSAF FILTER -->
+  <div class="rcard ksaf">
+    <div class="rcard-head"><span id="t-ksaf-head">🔵 KSAF — Precision Line Filter</span></div>
+    <div class="rcard-body" id="ksaf-body"><div class="no-match-r">กำลังคำนวณ...</div></div>
+  </div>
+
+  <!-- KSYF SEPARATOR -->
+  <div class="rcard ksyf">
+    <div class="rcard-head"><span id="t-ksyf-head">🟠 KSYF — Air/Water Separator</span></div>
+    <div class="rcard-body" id="ksyf-body"><div class="no-match-r">กำลังคำนวณ...</div></div>
   </div>
 
 </div>
 
+<!-- KSR-MZ ADSORPTION -->
+<div class="rcard ksrz" style="border-radius:6px;overflow:hidden;">
+  <div class="rcard-head"><span id="t-ksrz-head">💜 KSR-MZ — Heatless Adsorption Air Dryer (Dew Point -40°C)</span></div>
+  <div class="rcard-body" id="ksrz-body"><div class="no-match-r">กำลังคำนวณ...</div></div>
+</div>
+
+<!-- LOWER: Beta Tables + Summary -->
+<div class="lower">
+  <div class="lower-left">
+    <div class="card" style="height:100%;">
+      <div class="ch"><div class="dot"></div><span id="t-reftbl">ตาราง Correction Factor</span></div>
+      <div class="cb" style="padding:5px 7px;">
+        <div class="four">
+          <table class="bt" id="tb1">
+            <tr><td class="th1" colspan="2" id="t-b1h">β1 ความดัน</td></tr>
+            <tr><td class="th2">bar</td><td class="th2">β1</td></tr>
+            <tr data-v="0.65"><td>3</td><td>0.65</td></tr><tr data-v="0.8"><td>4</td><td>0.80</td></tr>
+            <tr data-v="0.88"><td>5</td><td>0.88</td></tr><tr data-v="0.92"><td>6</td><td>0.92</td></tr>
+            <tr data-v="1.0"><td>7</td><td>1.00</td></tr><tr data-v="1.04"><td>8</td><td>1.04</td></tr>
+            <tr data-v="1.07"><td>9</td><td>1.07</td></tr><tr data-v="1.12"><td>10</td><td>1.12</td></tr>
+            <tr data-v="1.16"><td>13</td><td>1.16</td></tr><tr data-v="1.19"><td>16</td><td>1.19</td></tr>
+          </table>
+          <table class="bt" id="tb2">
+            <tr><td class="th1" colspan="2" id="t-b2h">β2 อุณหภูมิขาเข้า</td></tr>
+            <tr><td class="th2">°C</td><td class="th2">β2</td></tr>
+            <tr data-v="1.25"><td>45</td><td>1.25</td></tr><tr data-v="1.15"><td>50</td><td>1.15</td></tr>
+            <tr data-v="1.1"><td>55</td><td>1.10</td></tr><tr data-v="1.05"><td>60</td><td>1.05</td></tr>
+            <tr data-v="1.0"><td>65</td><td>1.00</td></tr><tr data-v="0.95"><td>70</td><td>0.95</td></tr>
+            <tr data-v="0.88"><td>75</td><td>0.88</td></tr><tr data-v="0.80"><td>80</td><td>0.80</td></tr>
+          </table>
+          <table class="bt" id="tb3">
+            <tr><td class="th1" colspan="2" id="t-b3h">β3 อุณหภูมิแวดล้อม</td></tr>
+            <tr><td class="th2">°C</td><td class="th2">β3</td></tr>
+            <tr data-v="1.2"><td>25</td><td>1.20</td></tr><tr data-v="1.03"><td>30</td><td>1.03</td></tr>
+            <tr data-v="1.0"><td>32</td><td>1.00</td></tr><tr data-v="1.0"><td>35</td><td>1.00</td></tr>
+            <tr data-v="0.90"><td>38</td><td>0.90</td></tr><tr data-v="0.85"><td>40</td><td>0.85</td></tr>
+            <tr data-v="0.71"><td>45</td><td>0.71</td></tr><tr data-v="0.60"><td>50</td><td>0.60</td></tr>
+          </table>
+          <table class="bt" id="tb4">
+            <tr><td class="th1" colspan="2" id="t-b4h">β4 จุดน้ำค้าง</td></tr>
+            <tr><td class="th2">°C</td><td class="th2">β4</td></tr>
+            <tr data-v="0.85"><td>-2</td><td>0.85</td></tr><tr data-v="0.9"><td>0</td><td>0.90</td></tr>
+            <tr data-v="1.0"><td>+3</td><td>1.00</td></tr><tr data-v="1.1"><td>+5</td><td>1.10</td></tr>
+            <tr data-v="1.15"><td>+7</td><td>1.15</td></tr><tr data-v="1.2"><td>+10</td><td>1.20</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lower-right">
+    <div class="card" style="height:100%;">
+      <div class="ch"><div class="dot"></div><span id="t-summary">สรุปการคัดเลือก</span></div>
+      <div class="cb" style="padding:0;"><table class="st" id="sum-tbl"></table></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /body -->
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-l">
+    <div class="footer-logo" id="t-flogo">KAISHAN Air System Sizing · KSR · KSAF · KSYF · KSR-MZ</div>
+    <div style="margin-top:1px;" id="t-fsub">Q = (Qcomp ÷ βtotal) × SF | SF=1.15~1.25 | Refrigerant+Adsorption+Filter+Separator</div>
+  </div>
+  <div class="footer-r"><div id="footer-date">—</div><div style="margin-top:1px;" id="t-fstd">ZHEJIANG KAISHAN COMPRESSOR CO.,LTD.</div></div>
+</div>
+
+</div><!-- /page -->
+
 <div class="btns">
-  <button class="pb" id="t-print-btn" onclick="window.print()">&#128424;&nbsp; พิมพ์ / บันทึก PDF</button>
-  <button class="rb" id="t-reset-btn" onclick="resetForm()">&#8635;&nbsp; รีเซ็ต</button>
+  <button class="pb" id="t-pbtn" onclick="window.print()">🖨️ พิมพ์ / บันทึก PDF</button>
+  <button class="rb" id="t-rbtn" onclick="resetForm()">↺ รีเซ็ต</button>
 </div>
 
 <script>
-/* ── KSR SERIES DATA (from PDF page 6) ──
-   capacity = Nm³/min at standard condition (7bar, 45°C inlet, 38°C ambient)
-   All models: Refrigerant Type, Dew Point 2~7°C, Air Cooled */
-var KSR = [
-  {model:'KSR-014HG', cap:1.5,  rfPow:0.48,  pw:'220V',  conn:'G1',    L:650, W:420, H:780,  compKW:7.5,  wt:52},
-  {model:'KSR-028HG', cap:2.6,  rfPow:0.62,  pw:'220V',  conn:'G1',    L:680, W:450, H:850,  compKW:15,   wt:60},
-  {model:'KSR-038HG', cap:3.8,  rfPow:0.875, pw:'220V',  conn:'G1-1/2',L:760, W:500, H:890,  compKW:22,   wt:76},
-  {model:'KSR-071HG', cap:6.9,  rfPow:1.15,  pw:'220V',  conn:'G1-1/2',L:870, W:560, H:970,  compKW:37,   wt:96},
-  {model:'KSR-110HG', cap:11.0, rfPow:2.25,  pw:'220V',  conn:'G2',    L:1000,W:620, H:1035, compKW:55,   wt:140},
-  {model:'KSR-140HG', cap:14.0, rfPow:2.41,  pw:'380V',  conn:'G2-1/2',L:1050,W:650, H:1090, compKW:75,   wt:155},
-  {model:'KSR-150HG', cap:18.0, rfPow:3.28,  pw:'380V',  conn:'G2-1/2',L:1100,W:750, H:1160, compKW:90,   wt:180},
-  {model:'KSR-210HG', cap:22.0, rfPow:4.49,  pw:'380V',  conn:'G3',    L:1250,W:800, H:1240, compKW:110,  wt:216},
-  {model:'KSR-250HG', cap:28.0, rfPow:4.75,  pw:'380V',  conn:'G3',    L:1180,W:800, H:1490, compKW:150,  wt:256},
-  {model:'KSR-304HG', cap:32.0, rfPow:5.75,  pw:'380V',  conn:'G3',    L:1200,W:800, H:1490, compKW:160,  wt:316}
+/* ── DATA ── */
+var KSR=[
+  {model:'KSR-014HG',cap:1.5, rf:0.48, pw:'220V',conn:'G1',    L:650, W:420,H:780, kw:7.5, wt:52},
+  {model:'KSR-028HG',cap:2.6, rf:0.62, pw:'220V',conn:'G1',    L:680, W:450,H:850, kw:15,  wt:60},
+  {model:'KSR-038HG',cap:3.8, rf:0.875,pw:'220V',conn:'G1-1/2',L:760, W:500,H:890, kw:22,  wt:76},
+  {model:'KSR-071HG',cap:6.9, rf:1.15, pw:'220V',conn:'G1-1/2',L:870, W:560,H:970, kw:37,  wt:96},
+  {model:'KSR-110HG',cap:11.0,rf:2.25, pw:'220V',conn:'G2',    L:1000,W:620,H:1035,kw:55,  wt:140},
+  {model:'KSR-140HG',cap:14.0,rf:2.41, pw:'380V',conn:'G2-1/2',L:1050,W:650,H:1090,kw:75,  wt:155},
+  {model:'KSR-150HG',cap:18.0,rf:3.28, pw:'380V',conn:'G2-1/2',L:1100,W:750,H:1160,kw:90,  wt:180},
+  {model:'KSR-210HG',cap:22.0,rf:4.49, pw:'380V',conn:'G3',    L:1250,W:800,H:1240,kw:110, wt:216},
+  {model:'KSR-250HG',cap:28.0,rf:4.75, pw:'380V',conn:'G3',    L:1180,W:800,H:1490,kw:150, wt:256},
+  {model:'KSR-304HG',cap:32.0,rf:5.75, pw:'380V',conn:'G3',    L:1200,W:800,H:1490,kw:160, wt:316}
+];
+
+/* KSAF Filter — Flow Rate (Nm³/min) */
+var KSAF=[
+  {model:'KSAF-1', cap:1.5, conn:'Rc3/4',  H:251,W:100,elem:'*-001-III',wt:1.3},
+  {model:'KSAF-1B',cap:2,   conn:'Rc3/4',  H:301,W:100,elem:'*-002-III',wt:2.5},
+  {model:'KSAF-2', cap:3,   conn:'Rc1',    H:320,W:132,elem:'*-003-III',wt:3.05},
+  {model:'KSAF-3', cap:4,   conn:'Rc1-1/2',H:320,W:132,elem:'*-004-III',wt:2.85},
+  {model:'KSAF-6', cap:7,   conn:'Rc1-1/2',H:420,W:132,elem:'*-007-III',wt:3.35},
+  {model:'KSAF-6B',cap:10,  conn:'Rc2',    H:536,W:165,elem:'*-010-III',wt:6.5},
+  {model:'KSAF-12',cap:14,  conn:'Rc2-1/2',H:536,W:165,elem:'*-014-III',wt:6.2},
+  {model:'KSAF-15',cap:18,  conn:'Rc2-1/2',H:531,W:215,elem:'*-018-III',wt:8.15},
+  {model:'KSAF-20',cap:22,  conn:'Rc3',    H:531,W:215,elem:'*-022-III',wt:7.95},
+  {model:'KSAF-25',cap:28,  conn:'Rc3',    H:696,W:215,elem:'*-028-III',wt:8.8},
+  {model:'KSAF-30',cap:33,  conn:'Rc3',    H:696,W:215,elem:'*-033-III',wt:8.85}
+];
+
+/* Filter Grades from catalog */
+var FILTER_GRADES=[
+  {grade:'C', name:'Prefilter (Coalescing)',          micron:'3 µm',  oil:'5mg/m³ 5ppm',  eff:'99%',    dp:'≤0.007MPa', pre:'/'},
+  {grade:'T', name:'Universal oil removal (Coalescing)',micron:'1 µm',  oil:'0.5mg/m³ 0.5ppm',eff:'99.9%', dp:'≤0.007MPa',pre:'C'},
+  {grade:'A', name:'High efficiency oil removal',     micron:'0.01µm',oil:'0.01mg/m³',    eff:'99.99%', dp:'≤0.01MPa', pre:'T'},
+  {grade:'AA',name:'Super efficient oil removal',     micron:'0.01µm',oil:'0.001mg/m³',   eff:'99.999%',dp:'≤0.01MPa', pre:'A'},
+  {grade:'H', name:'Activated carbon (Oil vapor)',    micron:'N/A',   oil:'0.003mg/m³',   eff:'N/A',    dp:'≤0.01MPa', pre:'A'},
+  {grade:'TR',name:'Universal dust filter',           micron:'1 µm',  oil:'N/A',          eff:'99.9%',  dp:'≤0.007MPa',pre:'/'},
+  {grade:'AR',name:'High efficiency dust filter',     micron:'0.01µm',oil:'N/A',          eff:'99.99%', dp:'≤0.01MPa', pre:'TR'}
+];
+
+/* KSYF Separator */
+var KSYF=[
+  {model:'KSYF-1',  cap:1.2, pipe:'RC1"',   W:437,dim:'Φ108',wt:19},
+  {model:'KSYF-2',  cap:2.4, pipe:'RC1"',   W:437,dim:'Φ108',wt:19},
+  {model:'KSYF-3',  cap:3.6, pipe:'RC1"',   W:437,dim:'Φ108',wt:19},
+  {model:'KSYF-4.5',cap:5.4, pipe:'RC1½"',  W:490,dim:'Φ133',wt:24.2},
+  {model:'KSYF-6',  cap:6.5, pipe:'RC1½"',  W:490,dim:'Φ133',wt:24.2},
+  {model:'KSYF-8',  cap:10,  pipe:'RP2"',   W:543,dim:'Φ159',wt:35.7},
+  {model:'KSYF-10', cap:12,  pipe:'RP2"',   W:543,dim:'Φ159',wt:35.7},
+  {model:'KSYF-12', cap:14,  pipe:'RP2"',   W:543,dim:'Φ159',wt:35.7},
+  {model:'KSYF-15', cap:18,  pipe:'DN65',   W:712,dim:'Φ159',wt:45.2},
+  {model:'KSYF-20', cap:24,  pipe:'DN65',   W:665,dim:'Φ219',wt:62},
+  {model:'KSYF-25', cap:29,  pipe:'DN80',   W:830,dim:'Φ219',wt:70.4},
+  {model:'KSYF-30', cap:36,  pipe:'DN80',   W:830,dim:'Φ219',wt:70.4},
+  {model:'KSYF-40', cap:48,  pipe:'DN100',  W:931,dim:'Φ273',wt:107.1},
+  {model:'KSYF-50', cap:58,  pipe:'DN100',  W:1138,dim:'Φ325',wt:136.5},
+  {model:'KSYF-60', cap:66,  pipe:'DN125',  W:1138,dim:'Φ325',wt:142.8},
+  {model:'KSYF-80', cap:90,  pipe:'DN125',  W:1148,dim:'Φ325',wt:150.2},
+  {model:'KSYF-100',cap:110, pipe:'DN150',  W:1303,dim:'Φ377',wt:189},
+  {model:'KSYF-150',cap:170, pipe:'DN200',  W:1580,dim:'Φ462',wt:253},
+  {model:'KSYF-200',cap:210, pipe:'DN200',  W:1754,dim:'Φ562',wt:377}
+];
+
+/* KSR-MZ Adsorption Dryer */
+var KSRMZ=[
+  {model:'KSR-10MZ', cap:1.5, conn:'Rp3/4', L:393,W:350,H:1000,pw:'220V',kw:'7.5/11',wt:50},
+  {model:'KSR-20MZ', cap:2.5, conn:'Rp3/4', L:393,W:350,H:1300,pw:'220V',kw:'15',    wt:60},
+  {model:'KSR-30MZ', cap:3.5, conn:'Rp3/4', L:393,W:350,H:1600,pw:'220V',kw:'22',    wt:70},
+  {model:'KSR-50MZ', cap:6.5, conn:'Rp1-1/2',L:806,W:400,H:1340,pw:'220V',kw:'38',   wt:140}
 ];
 
 var lang='th';
-var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function pad(n){return n<10?'0'+n:''+n;}
 function gst(id){var e=document.getElementById(id);return e.options[e.selectedIndex].text;}
+function findModel(arr,flow){for(var i=0;i<arr.length;i++)if(arr[i].cap>=flow)return arr[i];return null;}
 
+/* ── TRANSLATIONS ── */
 var TX={
   th:{
-    doctag:'เอกสารทางวิศวกรรม',
-    title:'โปรแกรมเลือกขนาด <span>AIR DRYER</span>',
-    sub:'ชนิด Refrigerant · วิธีคำนวณด้วยค่า Correction Factor · KAISHAN KSR Series',
-    input:'พารามิเตอร์ระบบ',flowLbl:'อัตราการไหลของ Air Compressor',modelLbl:'รุ่น / หมายเลขเครื่อง',
-    pLbl:'ความดัน (β1)',itLbl:'อุณหภูมิขาเข้า (β2)',atLbl:'อุณหภูมิแวดล้อม (β3)',dpLbl:'จุดน้ำค้าง (β4)',
-    r1:'อัตราไหล Compressor',r2:'ค่าปรับแก้รวม',r3:'อัตราไหล Air Dryer ที่ต้องการ',r4:'เทียบเท่า',
-    rec:'⭐ รุ่นแนะนำ KAISHAN KSR Series',
-    reftbl:'ตารางค่า Correction Factor อ้างอิง',
+    doctag:'เอกสารทางวิศวกรรม — มาตรฐานโรงงาน',
+    title:'ระบบอากาศอัด <span>KAISHAN</span> — เลือกขนาดอัตโนมัติ',
+    sub:'KSR Air Dryer · KSAF Filter · KSYF Separator · KSR-MZ Adsorption · Safety Factor',
+    input:'พารามิเตอร์ระบบ',fl:'อัตราการไหล Air Compressor',ml:'รุ่น / หมายเลขเครื่อง',
+    pl:'ความดัน (β1)',il:'อุณหภูมิขาเข้า (β2)',al:'อุณหภูมิแวดล้อม (β3)',
+    dl:'จุดน้ำค้าง (β4)',sl:'⚠ Safety Factor (SF)',
+    row1:'สูตรพื้นฐาน',row2:'Flow + SF',
+    r1:'อัตราไหล Compressor',r2:'ค่าปรับแก้รวม',r3:'Flow พื้นฐาน',
+    r3b:'Flow พื้นฐาน',r4:'Safety Factor',r4b:'SF=1.20',
+    r5:'✅ Flow ที่ต้องการ',r6:'เทียบเท่า',
+    ksrHead:'🌬️ KSR — Refrigerant Air Dryer',
+    ksafHead:'🔵 KSAF — Precision Line Filter',
+    ksyfHead:'🟠 KSYF — Air/Water Separator',
+    ksrzHead:'💜 KSR-MZ — Heatless Adsorption Air Dryer (Dew Point -40°C)',
+    reftbl:'ตาราง Correction Factor',
     b1h:'β1 ความดัน',b2h:'β2 อุณหภูมิขาเข้า',b3h:'β3 อุณหภูมิแวดล้อม',b4h:'β4 จุดน้ำค้าง',
     summary:'สรุปการคัดเลือก',
-    footerLogo:'โปรแกรมเลือกขนาด AIR DRYER · KAISHAN KSR',
-    footerSub:'Refrigerant Type · Correction Factor Method · Gen 6 Super Cold Series',
-    printBtn:'🖨️  พิมพ์ / บันทึก PDF',resetBtn:'↺  รีเซ็ต',
-    sModel:'รุ่น / หมายเลขเครื่อง',sFlow:'อัตราการไหล Compressor',
-    sPres:'ความดันใช้งาน (β1)',sInlet:'อุณหภูมิขาเข้า (β2)',
-    sAmb:'อุณหภูมิแวดล้อม (β3)',sDew:'จุดน้ำค้างที่ต้องการ (β4)',
-    sComb:'ค่าปรับแก้รวม',sReq:'อัตราไหล AIR DRYER ที่ต้องการ',
-    sType:'ประเภท Air Dryer',sTypeVal:'Refrigerant Type',
-    sDewPerf:'ประสิทธิภาพ Dew Point',sDewPerfVal:'+2°C (ขั้นต่ำ)',
-    sRecModel:'รุ่นที่แนะนำ',dateLabel:'วันที่: ',
-    /* model card labels */
-    mlModel:'รุ่น KSR',mlCap:'Capacity',mlComp:'Matched Compressor',
-    msCap:'Nm³/min',msCompKW:'kW Compressor',msPW:'Power Supply',
-    msConn:'Connection',msL:'L(mm)',msW:'W(mm)',msH:'H(mm)',msWt:'Weight(kg)',
-    msRf:'Refrig. Power',
-    noMatch:'ไม่มีรุ่นที่รองรับ Flow Rate นี้ในช่วงที่กำหนด\nกรุณาติดต่อผู้แทนจำหน่าย KAISHAN',
-    noteExact:'✅ รุ่นที่เหมาะสมที่สุด — ความจุ Nominal พอดีกับที่คำนวณได้',
-    noteNext:'⬆️ เลือก 1 รุ่นถัดไป — ความจุ Nominal ≥ Flow Rate ที่ต้องการ',
-    capLabel:'ความจุ Nominal'
+    flogo:'KAISHAN Air System Sizing · KSR · KSAF · KSYF · KSR-MZ',
+    fsub:'Q = (Qcomp ÷ βtotal) × SF | Refrigerant+Adsorption+Filter+Separator',
+    fstd:'ZHEJIANG KAISHAN COMPRESSOR CO.,LTD.',
+    pbtn:'🖨️ พิมพ์ / บันทึก PDF',rbtn:'↺ รีเซ็ต',
+    sModel:'รุ่น Compressor',sFlow:'อัตราการไหล',sPres:'ความดัน (β1)',
+    sInlet:'อุณหภูมิขาเข้า (β2)',sAmb:'อุณหภูมิแวดล้อม (β3)',sDew:'จุดน้ำค้าง (β4)',
+    sComb:'ค่าปรับแก้รวม',sSF:'Safety Factor',sBase:'Flow พื้นฐาน',
+    sReq:'✅ Flow ที่ต้องการ',
+    sKSR:'รุ่น KSR (Refrigerant)',sKSAF:'รุ่น KSAF (Filter)',
+    sKSYF:'รุ่น KSYF (Separator)',sKSRZ:'รุ่น KSR-MZ (Adsorption)',
+    dateLabel:'วันที่: ',
+    noMatch:'ไม่พบรุ่นในช่วงนี้ — ติดต่อ KAISHAN',
+    lCap:'ความจุ',lConn:'Connection',lPW:'Power',lWt:'น้ำหนัก',lDim:'ขนาด',
+    lElem:'Filter Element',lPipe:'Pipe Size',lDew:'Dew Point',
+    noteOk:'✅ รุ่นที่เหมาะสม — Capacity พอดีกับ Flow ที่ต้องการ',
+    noteNext:'⬆️ รุ่นถัดไป — Capacity ≥ Required Flow (รวม SF แล้ว)',
+    gradeTitle:'Filter Grade / Element ที่แนะนำ',
+    gradeDesc:'เลือก Grade ตามคุณภาพอากาศที่ต้องการ'
   },
   en:{
-    doctag:'Engineering Technical Document',
-    title:'AIR DRYER <span>SIZING</span> CALCULATOR',
-    sub:'Refrigerant Type · Correction Factor Method · KAISHAN KSR Series',
-    input:'System Input Parameters',flowLbl:'Air Compressor Flow Rate',modelLbl:'Compressor Model / Tag No.',
-    pLbl:'Pressure (β1)',itLbl:'Inlet Temp (β2)',atLbl:'Ambient Temp (β3)',dpLbl:'Dew Point (β4)',
-    r1:'Compressor Flow',r2:'Combined Factor',r3:'Required Dryer Flow',r4:'Equivalent',
-    rec:'⭐ KAISHAN KSR Series — Recommended Model',
+    doctag:'Engineering Technical Document — Industry Standard',
+    title:'<span>KAISHAN</span> Compressed Air System Sizing',
+    sub:'KSR Air Dryer · KSAF Filter · KSYF Separator · KSR-MZ Adsorption · Safety Factor',
+    input:'System Input Parameters',fl:'Air Compressor Flow Rate',ml:'Compressor Model / Tag No.',
+    pl:'Pressure (β1)',il:'Inlet Temp (β2)',al:'Ambient Temp (β3)',
+    dl:'Dew Point (β4)',sl:'⚠ Safety Factor (SF)',
+    row1:'Base Formula',row2:'Final + SF',
+    r1:'Compressor Flow',r2:'Combined Factor',r3:'Base Flow',
+    r3b:'Base Flow',r4:'Safety Factor',r4b:'SF=1.20',
+    r5:'✅ Required Flow',r6:'Equivalent',
+    ksrHead:'🌬️ KSR — Refrigerant Air Dryer',
+    ksafHead:'🔵 KSAF — Precision Line Filter',
+    ksyfHead:'🟠 KSYF — Air/Water Separator',
+    ksrzHead:'💜 KSR-MZ — Heatless Adsorption Air Dryer (Dew Point -40°C)',
     reftbl:'Correction Factor Reference Tables',
     b1h:'β1 Pressure',b2h:'β2 Inlet Temp',b3h:'β3 Ambient',b4h:'β4 Dew Point',
     summary:'Selection Summary',
-    footerLogo:'AIR DRYER SIZING CALCULATOR · KAISHAN KSR',
-    footerSub:'Refrigerant Type · Correction Factor Method · Gen 6 Super Cold Series',
-    printBtn:'🖨️  PRINT / SAVE PDF',resetBtn:'↺  Reset',
-    sModel:'Compressor Model',sFlow:'Compressor Flow Rate',
-    sPres:'Operating Pressure (β1)',sInlet:'Inlet Air Temp (β2)',
-    sAmb:'Ambient Temp (β3)',sDew:'Required Dew Point (β4)',
-    sComb:'Combined Factor',sReq:'REQUIRED DRYER FLOW RATE',
-    sType:'Dryer Type',sTypeVal:'Refrigerant Type',
-    sDewPerf:'Dew Point Performance',sDewPerfVal:'+2°C (minimum)',
-    sRecModel:'Recommended Model',dateLabel:'Date: ',
-    mlModel:'KSR Model',mlCap:'Capacity',mlComp:'Matched Compressor',
-    msCap:'Nm³/min',msCompKW:'kW Compressor',msPW:'Power Supply',
-    msConn:'Connection',msL:'L(mm)',msW:'W(mm)',msH:'H(mm)',msWt:'Weight(kg)',
-    msRf:'Refrig. Power',
-    noMatch:'No model available for this flow rate range.\nPlease contact KAISHAN distributor.',
-    noteExact:'✅ Best fit — Nominal capacity matches required flow',
-    noteNext:'⬆️ Next size up selected — Nominal capacity ≥ required flow',
-    capLabel:'Nominal Capacity'
+    flogo:'KAISHAN Air System Sizing · KSR · KSAF · KSYF · KSR-MZ',
+    fsub:'Q = (Qcomp ÷ βtotal) × SF | Refrigerant+Adsorption+Filter+Separator',
+    fstd:'ZHEJIANG KAISHAN COMPRESSOR CO.,LTD.',
+    pbtn:'🖨️ PRINT / SAVE PDF',rbtn:'↺ Reset',
+    sModel:'Compressor Model',sFlow:'Flow Rate',sPres:'Pressure (β1)',
+    sInlet:'Inlet Temp (β2)',sAmb:'Ambient Temp (β3)',sDew:'Dew Point (β4)',
+    sComb:'Combined Factor',sSF:'Safety Factor',sBase:'Base Flow',
+    sReq:'✅ Required Dryer Flow',
+    sKSR:'KSR Model (Refrigerant)',sKSAF:'KSAF Model (Filter)',
+    sKSYF:'KSYF Model (Separator)',sKSRZ:'KSR-MZ Model (Adsorption)',
+    dateLabel:'Date: ',
+    noMatch:'No model in range — Contact KAISHAN',
+    lCap:'Capacity',lConn:'Connection',lPW:'Power',lWt:'Weight',lDim:'Dimension',
+    lElem:'Filter Element',lPipe:'Pipe Size',lDew:'Dew Point',
+    noteOk:'✅ Best fit — Capacity matches required flow',
+    noteNext:'⬆️ Next size up — Capacity ≥ Required flow (SF included)',
+    gradeTitle:'Recommended Filter Grade / Elements',
+    gradeDesc:'Select grade based on required air quality'
   }
 };
 
@@ -491,32 +554,138 @@ function setLang(l){
   var tx=TX[l];
   document.getElementById('btn-th').classList.toggle('active',l==='th');
   document.getElementById('btn-en').classList.toggle('active',l==='en');
-  document.getElementById('t-doctag').textContent=tx.doctag;
-  document.getElementById('t-title').innerHTML=tx.title;
-  document.getElementById('t-sub').textContent=tx.sub;
-  document.getElementById('t-input').textContent=tx.input;
-  document.getElementById('t-flow-lbl').textContent=tx.flowLbl;
-  document.getElementById('t-model-lbl').textContent=tx.modelLbl;
-  document.getElementById('t-p-lbl').textContent=tx.pLbl;
-  document.getElementById('t-it-lbl').textContent=tx.itLbl;
-  document.getElementById('t-at-lbl').textContent=tx.atLbl;
-  document.getElementById('t-dp-lbl').textContent=tx.dpLbl;
-  document.getElementById('t-r1').textContent=tx.r1;
-  document.getElementById('t-r2').textContent=tx.r2;
-  document.getElementById('t-r3').textContent=tx.r3;
-  document.getElementById('t-r4').textContent=tx.r4;
-  document.getElementById('t-rec').textContent=tx.rec;
-  document.getElementById('t-reftbl').textContent=tx.reftbl;
-  document.getElementById('t-b1h').textContent=tx.b1h;
-  document.getElementById('t-b2h').textContent=tx.b2h;
-  document.getElementById('t-b3h').textContent=tx.b3h;
-  document.getElementById('t-b4h').textContent=tx.b4h;
-  document.getElementById('t-summary').textContent=tx.summary;
-  document.getElementById('t-footer-logo').textContent=tx.footerLogo;
-  document.getElementById('t-footer-sub').textContent=tx.footerSub;
-  document.getElementById('t-print-btn').textContent=tx.printBtn;
-  document.getElementById('t-reset-btn').textContent=tx.resetBtn;
+  var mp={'t-doctag':'doctag','t-title':'title','t-sub':'sub','t-input':'input',
+    't-fl':'fl','t-ml':'ml','t-pl':'pl','t-il':'il','t-al':'al','t-dl':'dl','t-sl':'sl',
+    't-row1':'row1','t-row2':'row2','t-r1':'r1','t-r2':'r2','t-r3':'r3',
+    't-r3b':'r3b','t-r4':'r4','t-r4b':'r4b','t-r5':'r5','t-r6':'r6',
+    't-ksr-head':'ksrHead','t-ksaf-head':'ksafHead',
+    't-ksyf-head':'ksyfHead','t-ksrz-head':'ksrzHead',
+    't-reftbl':'reftbl','t-b1h':'b1h','t-b2h':'b2h','t-b3h':'b3h','t-b4h':'b4h',
+    't-summary':'summary','t-flogo':'flogo','t-fsub':'fsub','t-fstd':'fstd',
+    't-pbtn':'pbtn','t-rbtn':'rbtn'};
+  for(var id in mp){
+    var el=document.getElementById(id); if(!el) continue;
+    var k=mp[id];
+    if(k==='title'||k==='sub') el.innerHTML=tx[k]; else el.textContent=tx[k];
+  }
   calc();
+}
+
+function specs(items){
+  var h='<div class="specs-grid">';
+  for(var i=0;i<items.length;i++) h+='<div class="spec-item"><div class="spec-lbl">'+items[i][0]+'</div><div class="spec-val">'+items[i][1]+'</div></div>';
+  return h+'</div>';
+}
+
+function buildKSR(flow,tx){
+  var m=findModel(KSR,flow);
+  var b=document.getElementById('ksr-body');
+  if(!m){b.innerHTML='<div class="no-match-r">'+tx.noMatch+'</div>';return m;}
+  var note=(m.cap/flow<=1.15)?tx.noteOk:tx.noteNext;
+  b.innerHTML=
+    '<div class="model-main"><div class="model-icon">🌬️</div>'+
+    '<div><div class="model-name">'+m.model+'</div>'+
+    '<div class="model-sub">Air Cooled · Dew Point 2~7°C · R410a</div></div></div>'+
+    specs([[tx.lCap,m.cap+' Nm³/min'],[tx.lConn,m.conn],[tx.lPW,m.pw+'/50Hz'],[tx.lWt,m.wt+' kg'],
+           ['L×W×H',m.L+'×'+m.W+'×'+m.H+' mm'],['Refrig. Power',m.rf+' kW']])+
+    '<div class="match-badge">'+note+'</div>';
+  return m;
+}
+
+function buildKSAF(flow,tx){
+  var m=findModel(KSAF,flow);
+  var b=document.getElementById('ksaf-body');
+  if(!m){b.innerHTML='<div class="no-match-r">'+tx.noMatch+'</div>';return m;}
+  var note=(m.cap/flow<=1.2)?tx.noteOk:tx.noteNext;
+  // Filter grade table
+  var gradeRows='';
+  var recGrades=['C','T'];
+  for(var i=0;i<FILTER_GRADES.length;i++){
+    var g=FILTER_GRADES[i];
+    var isRec=(recGrades.indexOf(g.grade)>=0);
+    gradeRows+='<tr'+(isRec?' class="grade-sel"':'')+'><td class="grade-grade">'+g.grade+'</td><td>'+g.name+'</td><td>'+g.micron+'</td><td>'+g.eff+'</td></tr>';
+  }
+  b.innerHTML=
+    '<div class="model-main"><div class="model-icon">🔵</div>'+
+    '<div><div class="model-name">'+m.model+'</div>'+
+    '<div class="model-sub">Precision Line Filter · Coalescing Type</div></div></div>'+
+    specs([[tx.lCap,m.cap+' Nm³/min'],[tx.lConn,m.conn],['H',m.H+' mm'],['W',m.W+' mm'],[tx.lElem,m.elem],[tx.lWt,m.wt+' kg']])+
+    '<div class="match-badge">'+note+'</div>'+
+    '<div style="margin-top:7px;font-family:var(--fh);font-size:8.5px;letter-spacing:1px;text-transform:uppercase;color:rgba(46,204,113,0.7);margin-bottom:4px;">'+tx.gradeTitle+'</div>'+
+    '<table class="fgrade-table"><tr><th>Grade</th><th>Type</th><th>Micron</th><th>Eff.</th></tr>'+gradeRows+'</table>'+
+    '<div style="font-size:8px;color:rgba(255,255,255,0.3);margin-top:4px;">★ = Recommended standard set | C+T for before/after Air Dryer</div>';
+  return m;
+}
+
+function buildKSYF(flow,tx){
+  var m=findModel(KSYF,flow);
+  var b=document.getElementById('ksyf-body');
+  if(!m){b.innerHTML='<div class="no-match-r">'+tx.noMatch+'</div>';return m;}
+  var note=(m.cap/flow<=1.2)?tx.noteOk:tx.noteNext;
+  b.innerHTML=
+    '<div class="model-main"><div class="model-icon">🟠</div>'+
+    '<div><div class="model-name">'+m.model+'</div>'+
+    '<div class="model-sub">Compressed Air Separator · Removal ≥99%</div></div></div>'+
+    specs([[tx.lCap,m.cap+' Nm³/min'],[tx.lPipe,m.pipe],['Width',m.W+' mm'],['Φ',m.dim],[tx.lWt,m.wt+' kg'],['ΔP','≤0.003MPa']])+
+    '<div class="match-badge">'+note+'</div>'+
+    '<div style="margin-top:6px;padding:4px 7px;background:rgba(230,126,34,0.08);border-left:2px solid #e67e22;font-size:8.5px;color:rgba(243,156,18,0.7);border-radius:3px;">'+
+    'ติดตั้งหลัง Air Dryer · ดักน้ำและน้ำมันที่เหลือ · Intake 0.6-0.95MPa · Temp 5-65°C</div>';
+  return m;
+}
+
+function buildKSRZ(flow,tx){
+  var m=findModel(KSRMZ,flow);
+  var b=document.getElementById('ksrz-body');
+  if(!m){
+    b.innerHTML='<div style="padding:10px 12px;">'+
+      '<div style="font-family:var(--fh);font-size:11px;color:rgba(195,155,211,0.8);margin-bottom:8px;">'+
+      '⚠ KSR-MZ มีขนาดสูงสุด 6.5 Nm³/min — สำหรับระบบที่ใหญ่กว่า ใช้ KSR Refrigerant Type</div>'+
+      '<div style="font-size:9px;color:rgba(255,255,255,0.35);">'+
+      'KSR-MZ เหมาะสำหรับงานที่ต้องการ Dew Point ต่ำมาก (-40°C) เช่น Pharmaceutical / Semiconductor</div></div>';
+    return null;
+  }
+  var note=(m.cap/flow<=1.2)?tx.noteOk:tx.noteNext;
+  b.innerHTML=
+    '<div class="model-main"><div class="model-icon">💜</div>'+
+    '<div><div class="model-name">'+m.model+'</div>'+
+    '<div class="model-sub">Heatless Regeneration Adsorption · Dew Point -40°C</div></div></div>'+
+    specs([[tx.lCap,m.cap+' Nm³/min'],[tx.lConn,m.conn],[tx.lPW,m.pw+'V'],[tx.lWt,m.wt+' kg'],
+           ['L×W×H',m.L+'×'+m.W+'×'+m.H+' mm'],['Comp. kW',m.kw+' kW']])+
+    '<div class="match-badge">'+note+'</div>'+
+    '<div style="margin-top:6px;padding:4px 7px;background:rgba(155,89,182,0.08);border-left:2px solid #9b59b6;font-size:8.5px;color:rgba(195,155,211,0.7);border-radius:3px;">'+
+    'Dew Point: -40°C · Pressure Loss ≤3% · Noise ≤75dB · ใช้สำหรับ Clean Room / Food / Pharma</div>';
+  return m;
+}
+
+function hl(tid,val){
+  var rows=document.getElementById(tid).querySelectorAll('tr[data-v]');
+  for(var i=0;i<rows.length;i++) rows[i].classList.toggle('hl',parseFloat(rows[i].getAttribute('data-v'))===val);
+}
+
+function r(lb,vl,cls){
+  var c=cls||'';
+  if(c==='big') return '<tr class="big"><td class="lb">'+lb+'</td><td>'+vl+'</td></tr>';
+  if(c==='warn') return '<tr class="warn"><td class="lb">'+lb+'</td><td class="vl">'+vl+'</td></tr>';
+  if(c==='hi') return '<tr class="hi"><td class="lb">'+lb+'</td><td class="vl">'+vl+'</td></tr>';
+  return '<tr><td class="lb">'+lb+'</td><td class="vl">'+vl+'</td></tr>';
+}
+function sp(){return '<tr class="sep"><td colspan="2"><hr></td></tr>';}
+
+function buildSum(flow,b1,b2,b3,b4,cb,base,sf,fq,tx,ksrM,ksafM,ksyfM,ksrzM){
+  var model=document.getElementById('compModel').value||'—';
+  document.getElementById('sum-tbl').innerHTML=
+    r(tx.sModel,model)+r(tx.sFlow,flow.toFixed(2)+' m³/min')+sp()+
+    r(tx.sPres,gst('pressure')+' → β='+b1.toFixed(2))+
+    r(tx.sInlet,gst('inletTemp')+' → β='+b2.toFixed(2))+
+    r(tx.sAmb,gst('ambientTemp')+' → β='+b3.toFixed(2))+
+    r(tx.sDew,gst('dewPoint')+' → β='+b4.toFixed(2))+sp()+
+    r(tx.sComb,cb.toFixed(4))+r(tx.sBase,base.toFixed(2)+' m³/min')+
+    r(tx.sSF,'× '+sf.toFixed(2),'warn')+sp()+
+    r(tx.sReq,fq.toFixed(2)+' m³/min ('+(fq*1000).toFixed(0)+' L/min)','big')+sp()+
+    r(tx.sKSR, ksrM  ? '<strong style="color:var(--cyan);">'+ksrM.model+'</strong>'   : '—','hi')+
+    r(tx.sKSAF,ksafM ? '<strong style="color:#2ecc71;">'+ksafM.model+'</strong>'  : '—','hi')+
+    r(tx.sKSYF,ksyfM ? '<strong style="color:#f39c12;">'+ksyfM.model+'</strong>'  : '—','hi')+
+    r(tx.sKSRZ,ksrzM ? '<strong style="color:#c39bd3;">'+ksrzM.model+'</strong>'  : '—');
 }
 
 function calc(){
@@ -526,110 +695,30 @@ function calc(){
   var b2=parseFloat(document.getElementById('inletTemp').value);
   var b3=parseFloat(document.getElementById('ambientTemp').value);
   var b4=parseFloat(document.getElementById('dewPoint').value);
-  var cb=b1*b2*b3*b4;
-  var dr=cb>0?flow/cb:0;
+  var sf=parseFloat(document.getElementById('sfactor').value);
+  var cb=b1*b2*b3*b4, base=cb>0?flow/cb:0, fq=base*sf;
 
   document.getElementById('res-flow').textContent=flow.toFixed(2);
   document.getElementById('res-beta').textContent=cb.toFixed(4);
-  document.getElementById('res-dryer').textContent=dr.toFixed(2);
-  document.getElementById('res-lpm').textContent=(dr*1000).toFixed(0);
+  document.getElementById('res-base').textContent=base.toFixed(2);
+  document.getElementById('res-base2').textContent=base.toFixed(2);
+  document.getElementById('res-sf').textContent='× '+sf.toFixed(2);
+  document.getElementById('t-r4b').textContent='SF='+sf.toFixed(2);
+  document.getElementById('res-final').textContent=fq.toFixed(2);
+  document.getElementById('res-lpm').textContent=(fq*1000).toFixed(0);
 
   hl('tb1',b1);hl('tb2',b2);hl('tb3',b3);hl('tb4',b4);
-  buildModel(dr,tx);
-  buildSum(flow,b1,b2,b3,b4,cb,dr,tx);
+
+  var ksrM=buildKSR(fq,tx);
+  var ksafM=buildKSAF(fq,tx);
+  var ksyfM=buildKSYF(fq,tx);
+  var ksrzM=buildKSRZ(fq,tx);
+  buildSum(flow,b1,b2,b3,b4,cb,base,sf,fq,tx,ksrM,ksafM,ksyfM,ksrzM);
 
   var now=new Date();
-  var ds=pad(now.getDate())+' '+mo[now.getMonth()]+' '+now.getFullYear();
-  var ts=pad(now.getHours())+':'+pad(now.getMinutes());
-  document.getElementById('footer-date').textContent=ds+'  '+ts;
+  var ds=pad(now.getDate())+' '+MO[now.getMonth()]+' '+now.getFullYear();
+  document.getElementById('footer-date').textContent=ds+'  '+pad(now.getHours())+':'+pad(now.getMinutes());
   document.getElementById('doc-date').textContent=tx.dateLabel+ds;
-}
-
-function buildModel(dr,tx){
-  var body=document.getElementById('model-body');
-  /* Find first model where nominal capacity >= required flow */
-  var match=null, exact=false;
-  for(var i=0;i<KSR.length;i++){
-    if(KSR[i].cap>=dr){
-      match=KSR[i];
-      exact=(i===0||KSR[i-1].cap<dr);
-      break;
-    }
-  }
-  if(!match){
-    body.innerHTML='<div class="no-match">'+tx.noMatch.replace('\n','<br>')+'</div>';
-    return;
-  }
-  var note=tx.noteNext;
-  /* Check if this is a tight fit (within 15% headroom = "exact" recommendation) */
-  if(match.cap/dr<=1.15) note=tx.noteExact;
-
-  body.innerHTML=
-    '<div class="brand-row">'+
-      '<div class="brand-badge">KAISHAN</div>'+
-      '<div class="brand-sub">Gen 6 Super Cold Air Dryer · Refrigerant Type R410a · Dew Point 2~7&deg;C</div>'+
-    '</div>'+
-    '<div class="model-grid">'+
-      '<div class="model-item">'+
-        '<div class="ml">'+tx.mlModel+'</div>'+
-        '<div class="mv">'+match.model+'</div>'+
-        '<div class="ms">Air Cooled</div>'+
-      '</div>'+
-      '<div class="model-item">'+
-        '<div class="ml">'+tx.capLabel+'</div>'+
-        '<div class="mv">'+match.cap.toFixed(1)+'</div>'+
-        '<div class="ms">Nm&sup3;/min</div>'+
-      '</div>'+
-      '<div class="model-item">'+
-        '<div class="ml">'+tx.mlComp+'</div>'+
-        '<div class="mv">'+match.compKW+'</div>'+
-        '<div class="ms">kW</div>'+
-      '</div>'+
-    '</div>'+
-    '<div class="model-specs">'+
-      '<div class="ms-item"><div class="msl">'+tx.msPW+'</div><div class="msv">'+match.pw+'/50Hz</div></div>'+
-      '<div class="ms-item"><div class="msl">'+tx.msConn+'</div><div class="msv">'+match.conn+'</div></div>'+
-      '<div class="ms-item"><div class="msl">'+tx.msRf+'</div><div class="msv">'+match.rfPow+' kW</div></div>'+
-      '<div class="ms-item"><div class="msl">'+tx.msWt+'</div><div class="msv">'+match.wt+' kg</div></div>'+
-    '</div>'+
-    '<div class="model-specs" style="border-top:1px solid rgba(255,255,255,0.06);margin-top:4px;padding-top:6px;">'+
-      '<div class="ms-item"><div class="msl">L (mm)</div><div class="msv">'+match.L+'</div></div>'+
-      '<div class="ms-item"><div class="msl">W (mm)</div><div class="msv">'+match.W+'</div></div>'+
-      '<div class="ms-item"><div class="msl">H (mm)</div><div class="msv">'+match.H+'</div></div>'+
-      '<div class="ms-item"><div class="msl">Flow Req.</div><div class="msv">'+dr.toFixed(2)+' m&sup3;/min</div></div>'+
-    '</div>'+
-    '<div class="match-note">'+note+'</div>';
-}
-
-function hl(tid,val){
-  var rows=document.getElementById(tid).querySelectorAll('tr[data-v]');
-  for(var i=0;i<rows.length;i++)
-    rows[i].classList.toggle('hl',parseFloat(rows[i].getAttribute('data-v'))===val);
-}
-function r(lb,vl,big){
-  return big
-    ?'<tr class="big"><td class="lb">'+lb+'</td><td>'+vl+'</td></tr>'
-    :'<tr><td class="lb">'+lb+'</td><td class="vl">'+vl+'</td></tr>';
-}
-function sp(){return '<tr class="sep"><td colspan="2"><hr></td></tr>';}
-
-function buildSum(flow,b1,b2,b3,b4,cb,dr,tx){
-  var model=document.getElementById('compModel').value||'\u2014';
-  /* Find recommended KSR model */
-  var recModel='\u2014';
-  for(var i=0;i<KSR.length;i++){if(KSR[i].cap>=dr){recModel=KSR[i].model;break;}}
-  document.getElementById('sum-tbl').innerHTML=
-    r(tx.sModel,model)+
-    r(tx.sFlow,flow.toFixed(2)+' m\u00B3/min')+sp()+
-    r(tx.sPres,gst('pressure')+' \u2192 \u03B2='+b1.toFixed(2))+
-    r(tx.sInlet,gst('inletTemp')+' \u2192 \u03B2='+b2.toFixed(2))+
-    r(tx.sAmb,gst('ambientTemp')+' \u2192 \u03B2='+b3.toFixed(2))+
-    r(tx.sDew,gst('dewPoint')+' \u2192 \u03B2='+b4.toFixed(2))+sp()+
-    r(tx.sComb,cb.toFixed(4))+sp()+
-    r(tx.sReq,dr.toFixed(2)+' m\u00B3/min<br>('+(dr*1000).toFixed(0)+' L/min)',true)+
-    r(tx.sType,tx.sTypeVal)+
-    r(tx.sDewPerf,tx.sDewPerfVal)+sp()+
-    r(tx.sRecModel,'<strong style="color:var(--green);font-family:var(--fh);font-size:13px;">'+recModel+'</strong>');
 }
 
 function resetForm(){
@@ -639,6 +728,7 @@ function resetForm(){
   document.getElementById('inletTemp').value='1.0';
   document.getElementById('ambientTemp').value='0.90';
   document.getElementById('dewPoint').value='1.2';
+  document.getElementById('sfactor').value='1.20';
   calc();
 }
 calc();

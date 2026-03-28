@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KAISHAN | Engineered Air Dryer Sizing Report</title>
+    <title>KAISHAN | AI Compressor & Dryer Sizing</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -34,193 +34,109 @@
             border-top: 6px solid var(--navy);
         }
 
-        /* Header */
         .header {
             background: var(--navy);
             color: var(--white);
-            padding: 30px;
+            padding: 25px;
             text-align: center;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
-            letter-spacing: 1px;
-            color: var(--gold);
+        .header h1 { margin: 0; font-size: 22px; color: var(--gold); }
+
+        /* Type Selector Buttons */
+        .type-selector {
+            display: flex;
+            background: #eee;
+            padding: 10px;
+            gap: 10px;
+            justify-content: center;
         }
 
-        .header p {
-            margin: 5px 0 0;
-            opacity: 0.8;
-            font-weight: 300;
+        .type-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Prompt';
+            font-weight: 600;
+            transition: 0.3s;
+            background: #ddd;
+            color: #666;
         }
 
-        /* Form Section */
+        .type-btn.active {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .type-btn.active.gold-mode {
+            background: var(--gold);
+            color: var(--navy);
+        }
+
         .config-section {
-            padding: 30px;
-            background: #fff;
+            padding: 25px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
             border-bottom: 1px solid #eee;
         }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-        }
+        .input-group { display: flex; flex-direction: column; }
+        .input-group label { font-size: 12px; font-weight: 600; margin-bottom: 5px; color: var(--navy); }
+        .input-group input, .input-group select { padding: 10px; border: 1px solid #ccd6e0; border-radius: 6px; font-family: 'Prompt'; }
 
-        .input-group label {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--navy);
-        }
-
-        .input-group input, .input-group select {
-            padding: 12px;
-            border: 1px solid #ccd6e0;
-            border-radius: 6px;
-            font-family: 'Prompt';
-            font-size: 15px;
-        }
-
-        /* Result Section */
-        .result-section {
-            padding: 40px;
-            background: linear-gradient(135deg, #fdfdfd 0%, #f4f7fa 100%);
-        }
-
-        .result-card {
-            background: var(--white);
-            border: 2px solid var(--navy);
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .result-card::after {
-            content: "ENGINEERED SELECTION";
-            position: absolute;
-            top: -12px;
-            right: 20px;
-            background: var(--gold);
-            color: var(--navy);
-            padding: 2px 12px;
-            font-size: 11px;
-            font-weight: 700;
-            border-radius: 4px;
-        }
-
-        .main-flow {
-            text-align: center;
-        }
-
-        .main-flow .value {
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--navy);
-            line-height: 1;
-        }
-
-        .main-flow .unit {
-            font-size: 18px;
-            color: var(--navy);
-            font-weight: 400;
-        }
-
-        .specs-grid {
+        .result-section { padding: 30px; background: #f9fbff; }
+        
+        /* Recommendation Cards */
+        .grid-results {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-            border-top: 1px dashed #ccc;
-            padding-top: 20px;
+            gap: 20px;
+            margin-bottom: 25px;
         }
 
-        .spec-item {
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* Value Block */
-        .value-block {
-            background: var(--navy);
-            color: var(--white);
-            padding: 25px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-        }
-
-        .value-block h3 {
-            color: var(--gold);
-            margin-top: 0;
-            font-size: 18px;
-        }
-
-        .value-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .value-list li {
-            margin-bottom: 10px;
-            padding-left: 25px;
-            position: relative;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .value-list li::before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: var(--gold);
-            font-weight: 700;
-        }
-
-        /* Footer & CTA */
-        .footer {
-            padding: 30px;
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e6ed;
             text-align: center;
-            font-size: 12px;
-            color: #7f8c8d;
-            border-top: 1px solid #eee;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        .closing-statement {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--navy);
-            margin-bottom: 20px;
-            font-style: italic;
+        .card h4 { margin: 0 0 10px 0; font-size: 14px; color: #7f8c8d; text-transform: uppercase; }
+        .card .model-name { font-size: 24px; font-weight: 700; color: var(--navy); display: block; margin: 5px 0; }
+        .card .cap-info { font-size: 13px; color: var(--success); font-weight: 600; }
+
+        .total-dryer {
+            grid-column: span 2;
+            background: var(--navy);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
         }
+
+        .total-dryer h4 { color: var(--gold); }
+        .total-dryer .value { font-size: 36px; font-weight: 700; }
 
         .btn-print {
+            width: 100%;
             background: var(--gold);
             color: var(--navy);
             border: none;
-            padding: 15px 40px;
+            padding: 15px;
             font-family: 'Prompt';
             font-weight: 700;
-            border-radius: 30px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
+            margin-top: 20px;
         }
 
-        .btn-print:hover {
-            background: var(--dark-gold);
-            transform: translateY(-2px);
-        }
-
-        @media print {
-            .config-section, .btn-print { display: none; }
-            body { padding: 0; background: #fff; }
-            .container { box-shadow: none; border: none; }
+        @media (max-width: 600px) {
+            .grid-results { grid-template-columns: 1fr; }
+            .total-dryer { grid-column: span 1; }
         }
     </style>
 </head>
@@ -228,119 +144,120 @@
 
 <div class="container">
     <div class="header">
-        <h1>KAISHAN COMPRESSED AIR SYSTEM</h1>
-        <p>Technical Sizing & Engineering Selection Report</p>
+        <h1>KAISHAN SYSTEM SELECTOR</h1>
+    </div>
+
+    <div class="type-selector">
+        <button class="type-btn active" id="btn-fix" onclick="setType('fix')">FIX SPEED (KRSD)</button>
+        <button class="type-btn" id="btn-inv" onclick="setType('inv')">INVERTER (PMV)</button>
     </div>
 
     <div class="config-section">
         <div class="input-group">
-            <label>Air Flow (Nm³/min)</label>
-            <input type="number" id="flow" value="10.0" oninput="calculate()">
+            <label>Required Air Flow (m³/min)</label>
+            <input type="number" id="flow" value="10.0" step="0.1" oninput="calculate()">
         </div>
         <div class="input-group">
             <label>Working Pressure (bar)</label>
             <select id="pressure" onchange="calculate()">
                 <option value="0.75">5 bar</option>
-                <option value="0.89">6 bar</option>
-                <option value="1.0" selected>7 bar</option>
-                <option value="1.08">8 bar</option>
+                <option value="1.0" selected>7-8 bar</option>
                 <option value="1.25">10 bar</option>
-            </select>
-        </div>
-        <div class="input-group">
-            <label>Inlet Temp (°C)</label>
-            <select id="inletTemp" onchange="calculate()">
-                <option value="1.2">30°C</option>
-                <option value="1.0" selected>35°C</option>
-                <option value="0.85">40°C</option>
-                <option value="0.72">45°C</option>
             </select>
         </div>
         <div class="input-group">
             <label>Ambient Temp (°C)</label>
             <select id="ambientTemp" onchange="calculate()">
                 <option value="1.0" selected>35°C</option>
-                <option value="0.94">40°C</option>
-                <option value="0.85">45°C</option>
                 <option value="0.75">50°C</option>
             </select>
         </div>
     </div>
 
     <div class="result-section">
-        <div class="result-card">
-            <div class="main-flow">
-                <p style="margin:0; font-size:14px; color:#7f8c8d;">Required Dryer Capacity</p>
-                <span class="value" id="res-final">12.00</span>
-                <span class="unit">Nm³/min</span>
+        <div class="grid-results">
+            <div class="card">
+                <h4 id="comp-title">Recommended Compressor</h4>
+                <span class="model-name" id="res-comp-model">-</span>
+                <span class="cap-info" id="res-comp-cap">Capacity: - m³/min</span>
             </div>
-            
-            <div class="specs-grid">
-                <div class="spec-item">
-                    <span>Correction Factor (Total):</span>
-                    <strong id="res-beta">1.00</strong>
-                </div>
-                <div class="spec-item">
-                    <span>Safety Factor (SF):</span>
-                    <strong>1.20</strong>
-                </div>
-                <div class="spec-item">
-                    <span>Design Standard:</span>
-                    <strong>ISO 7183</strong>
-                </div>
-                <div class="spec-item">
-                    <span>Application:</span>
-                    <strong>Heavy Industrial</strong>
+
+            <div class="card">
+                <h4>Required Dryer Size</h4>
+                <span class="model-name" id="res-dryer-val">0.00</span>
+                <span class="cap-info">Nm³/min (Min. Req)</span>
+            </div>
+
+            <div class="total-dryer">
+                <h4>ENGINEERING SUMMARY</h4>
+                <div style="display:flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div class="value" id="res-final-dryer">12.00</div>
+                        <div style="font-size:12px; opacity:0.8;">Suggested Dryer Capacity (SF 1.2)</div>
+                    </div>
+                    <div style="text-align: right; font-size:14px;">
+                        Status: <span style="color:var(--gold)">Ready to Order</span><br>
+                        Standard: ISO 7183
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="value-block">
-            <h3>Value for Your Facility</h3>
-            <ul class="value-list">
-                <li><strong>ISO 7183 Compliance:</strong> คำนวณตามมาตรฐานวิศวกรรมสากล มั่นใจได้ว่าลมแห้งจริงแม้ในสภาวะ Peak Load</li>
-                <li><strong>Zero Moisture Risk:</strong> กำจัดความเสี่ยงเรื่องน้ำหลุดเข้าไลน์ผลิต ช่วยปกป้องเครื่องจักร CNC และระบบ Solenoid</li>
-                <li><strong>Energy Efficiency:</strong> ขนาดที่เหมาะสมช่วยลด Pressure Drop ในระบบ ประหยัดค่าไฟในระยะยาว</li>
-                <li><strong>Tropicalized Design:</strong> ปรับจูน Correction Factor สำหรับสภาพอากาศร้อนชื้นของเมืองไทยโดยเฉพาะ</li>
-            </ul>
-        </div>
-
-        <div style="text-align: center;">
-            <p class="closing-statement">"This selection ensures ZERO moisture risk under actual plant conditions."</p>
-            <button class="btn-print" onclick="window.print()">Download Technical Report</button>
-        </div>
-    </div>
-
-    <div class="footer">
-        All calculations are based on ISO 7183 standard conditions and KAISHAN engineering correction factors.<br>
-        © 2026 KAISHAN COMPRESSOR (THAILAND) - Professional Air Solution.
+        <button class="btn-print" onclick="window.print()">GENERATE TECHNICAL DATA SHEET</button>
     </div>
 </div>
 
 <script>
-function calculate() {
-    const qfad = parseFloat(document.getElementById('flow').value) || 0;
-    const cp = parseFloat(document.getElementById('pressure').value);
-    const ct = parseFloat(document.getElementById('inletTemp').value);
-    const ca = parseFloat(document.getElementById('ambientTemp').value);
-    const cd = 1.0; // Standard Dew Point +3°C
-    const sf = 1.2; // Engineering Buffer
+// Database Compressor
+const KRSD_DATA = [
+    { m: "KRSD-18", c: 3.3 }, { m: "KRSD-22", c: 3.8 }, { m: "KRSD-30", c: 5.7 },
+    { m: "KRSD-37", c: 6.8 }, { m: "KRSD-55", c: 10.0 }, { m: "KRSD-75", c: 14.0 },
+    { m: "KRSD-90", c: 17.0 }, { m: "KRSD-110", c: 21.2 }, { m: "KRSD-132", c: 24.0 },
+    { m: "KRSD-160", c: 28.5 }, { m: "KRSD-200", c: 36.8 }, { m: "KRSD-250", c: 45.0 },
+    { m: "KRSD-315", c: 55.2 }, { m: "KRSD-355", c: 64.0 }
+];
 
-    const betaTotal = cp * ct * ca * cd;
-    
-    // Formula: Qdryer = (Qfad / BetaTotal) * SF
-    let qDryer = 0;
-    if(betaTotal > 0) {
-        qDryer = (qfad / betaTotal) * sf;
-    }
+const PMV_DATA = [
+    { m: "PMVFQ15", c: 2.88 }, { m: "PMVFQ22", c: 4.22 }, { m: "PMVFQ37", c: 7.42 },
+    { m: "PMVFQ45", c: 9.27 }, { m: "PMVFQ55", c: 11.95 }, { m: "PMVFQ75-II", c: 16.5 },
+    { m: "PMVFQ90-II", c: 21.7 }, { m: "PMVFQ110-II", c: 25.7 }, { m: "PMVFQ132-II", c: 33.6 },
+    { m: "PMVFQ160-II", c: 39.5 }, { m: "PMVFQ185-II", c: 43.5 }, { m: "PMVFQ200-II", c: 47.4 },
+    { m: "PMVFQ250-II", c: 59.3 }
+];
 
-    document.getElementById('res-final').textContent = qDryer.toFixed(2);
-    document.getElementById('res-beta').textContent = betaTotal.toFixed(3);
+let currentType = 'fix';
+
+function setType(type) {
+    currentType = type;
+    document.getElementById('btn-fix').classList.toggle('active', type === 'fix');
+    document.getElementById('btn-inv').classList.toggle('active', type === 'inv');
+    document.getElementById('comp-title').textContent = type === 'fix' ? "Fix Speed (KRSD)" : "Inverter (PMV)";
+    calculate();
 }
 
-// Initial calculation
+function calculate() {
+    const inputFlow = parseFloat(document.getElementById('flow').value) || 0;
+    const cp = parseFloat(document.getElementById('pressure').value);
+    const ca = parseFloat(document.getElementById('ambientTemp').value);
+    
+    // 1. Auto Select Compressor
+    const db = currentType === 'fix' ? KRSD_DATA : PMV_DATA;
+    let selectedComp = db.find(item => item.c >= inputFlow);
+    if (!selectedComp) selectedComp = { m: "Consult Factory", c: 0 };
+
+    document.getElementById('res-comp-model').textContent = selectedComp.m;
+    document.getElementById('res-comp-cap').textContent = `Capacity: ${selectedComp.c} m³/min`;
+
+    // 2. Air Dryer Sizing Logic
+    const beta = cp * ca; // Simplified factor
+    const qDryerMin = inputFlow / beta;
+    const qDryerFinal = qDryerMin * 1.2; // Safety Factor 1.2
+
+    document.getElementById('res-dryer-val').textContent = qDryerMin.toFixed(2);
+    document.getElementById('res-final-dryer').textContent = qDryerFinal.toFixed(2);
+}
+
 calculate();
 </script>
-
 </body>
 </html>

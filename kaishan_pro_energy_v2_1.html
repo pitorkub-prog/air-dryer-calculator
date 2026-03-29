@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>KAISHAN — Professional Energy Cost Calculator</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&family=Sarabun:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+:root{
+  --navy:#0d2240; --blue:#1a5fa8; --cyan:#0098b4; --cyan2:#00cce0;
+  --gold:#d4870a; --green:#006b52; --green2:#00a878;
+  --muted:#5a7296; --border:#c5d5e8; --light:#f0f5fb;
+  --mid:#e2ecf7; --text:#14253d; --white:#fff;
+  --bg:#edf3fa;
+  --red:#b03020; --orange:#c05010;
+  --fh:'Barlow Condensed',sans-serif;
+  --fb:'Sarabun',sans-serif;
+  --fm:'Share Tech Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);padding:10px 12px;font-size:13px;}
+
+/* ══ PAGE WRAPPER ══ */
+.page{width:100%;max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
+
+/* ══ HEADER ══ */
+.hdr{background:var(--navy);border-radius:10px;overflow:hidden;position:relative;}
+.hdr-top{padding:14px 20px 10px;display:flex;align-items:center;gap:16px;}
+.hdr-logo-wrap{flex-shrink:0;}
+.hdr-logo-wrap img{height:56px;width:auto;display:block;filter:brightness(1.15);}
+.hdr-divider{width:2px;height:56px;background:rgba(0,204,224,0.25);flex-shrink:0;}
+.hdr-text{flex:1;}
+.hdr-text .eye{font-family:var(--fh);color:var(--cyan2);font-size:8px;letter-spacing:4px;text-transform:uppercase;opacity:.7;margin-bottom:3px;}
+.hdr-text h1{font-family:var(--fh);color:var(--white);font-size:clamp(19px,3.5vw,28px);font-weight:900;line-height:1.05;letter-spacing:.5px;}
+.hdr-text h1 em{color:var(--cyan2);font-style:normal;}
+.hdr-text .sub{color:rgba(255,255,255,.38);font-size:9px;margin-top:4px;letter-spacing:.3px;}
+.hdr-badges{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.badge{display:inline-block;padding:3px 9px;border-radius:4px;font-family:var(--fh);font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.badge-iso{background:rgba(0,204,224,.12);border:1px solid rgba(0,204,224,.3);color:var(--cyan2);}
+.badge-vsd{background:rgba(212,135,10,.12);border:1px solid rgba(212,135,10,.3);color:#f0a830;}
+.hdr-bot{background:rgba(0,0,0,.22);padding:5px 20px;display:flex;justify-content:space-between;align-items:center;}
+.hdr-bot span{font-family:var(--fh);font-size:8px;color:rgba(255,255,255,.3);letter-spacing:.5px;}
+.hdr-bot #doc-date{color:rgba(0,204,224,.6);}
+
+/* ══ CARD ══ */
+.card{background:var(--white);border-radius:8px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 6px rgba(10,30,60,.06);}
+.card-head{background:var(--navy);padding:6px 14px;display:flex;align-items:center;gap:7px;}
+.ch-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan2);flex-shrink:0;}
+.ch-dot.gold{background:var(--gold);}
+.ch-dot.green{background:var(--green2);}
+.ch-dot.red{background:#d04828;}
+.card-head .ch-title{font-family:var(--fh);color:var(--cyan2);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.card-body{padding:12px 14px;}
+
+/* ══ INPUT GRID ══ */
+.input-grid{display:grid;gap:8px;}
+.g2{grid-template-columns:repeat(2,1fr);}
+.g3{grid-template-columns:repeat(3,1fr);}
+.g4{grid-template-columns:repeat(4,1fr);}
+.g5{grid-template-columns:repeat(5,1fr);}
+@media(max-width:700px){.g4,.g5{grid-template-columns:repeat(2,1fr);}.g3{grid-template-columns:repeat(2,1fr);}}
+
+/* Field */
+.field{display:flex;flex-direction:column;gap:3px;}
+.field .fl{font-size:7.5px;font-weight:700;color:var(--muted);letter-spacing:.6px;text-transform:uppercase;}
+.field .fl span{color:var(--gold);font-weight:800;}/* highlight key param */
+.field .fr{display:flex;}
+.field .fr input,.field .fr select{
+  flex:1;min-width:0;padding:7px 8px;border:1.5px solid var(--border);
+  border-radius:5px 0 0 5px;font-family:var(--fh);font-size:14px;font-weight:700;
+  color:var(--text);background:#f7faff;outline:none;-webkit-appearance:none;
+}
+.field .fr input:focus,.field .fr select:focus{border-color:var(--cyan);background:#fff;}
+.field .fr .u{
+  background:var(--light);border:1.5px solid var(--border);border-left:none;
+  border-radius:0 5px 5px 0;padding:7px 7px;font-size:8px;font-weight:700;
+  color:var(--blue);white-space:nowrap;display:flex;align-items:center;
+}
+/* Highlighted field */
+.f-gold .fl span{color:var(--gold);}
+.f-gold .fr input,.f-gold .fr select{border-color:var(--gold)!important;background:#fffaf0!important;}
+.f-gold .fr .u{background:#fff8e1;border-color:var(--gold);color:var(--orange);}
+.f-red .fr input{border-color:#c04830!important;background:#fff6f4!important;}
+.f-red .fr .u{background:#fdf0ee;border-color:#c04830;color:var(--red);}
+
+/* Section label inside card */
+.sec-lbl{font-family:var(--fh);font-size:8px;font-weight:800;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+
+/* Spec note row */
+.spec-note{background:var(--light);border-radius:5px;padding:6px 10px;font-size:8.5px;color:var(--muted);line-height:1.6;border-left:3px solid var(--cyan);}
+.spec-note strong{color:var(--navy);}
+
+/* ══ FORMULA STRIP ══ */
+.fstrip{background:linear-gradient(90deg,var(--navy) 0%,#112a4e 100%);border-radius:7px;overflow:hidden;}
+.frow{display:flex;align-items:center;padding:9px 14px;gap:2px;}
+.frow2{background:rgba(0,180,200,.07);border-top:1px solid rgba(255,255,255,.06);}
+.fi{flex:1;min-width:0;text-align:center;position:relative;}
+.fi+.fi::before{content:'';position:absolute;left:0;top:15%;bottom:15%;width:1px;background:rgba(255,255,255,.08);}
+.fl2{font-family:var(--fh);font-size:6.5px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:2px;}
+.fv{font-family:var(--fh);font-size:clamp(14px,3.5vw,22px);font-weight:800;line-height:1;}
+.fv.c{color:#40d0f0;} .fv.g{color:#f0b030;} .fv.gr{color:var(--green2);}
+.fv.w{color:#ffd060;} .fv.fin{color:#60f0b0;font-size:clamp(16px,4vw,25px);}
+.fu{font-size:7px;color:rgba(255,255,255,.25);margin-top:1px;}
+.fop{color:rgba(255,255,255,.18);font-size:clamp(14px,3vw,20px);padding:0 4px;flex-shrink:0;}
+.frow-lbl{font-family:var(--fh);font-size:7px;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.28);writing-mode:vertical-rl;transform:rotate(180deg);
+  padding:0 6px;flex-shrink:0;}
+.frow-lbl.r1{color:rgba(255,200,60,.45);} .frow-lbl.r2{color:rgba(0,220,200,.45);}
+
+/* ══ ENERGY TABLE ══ */
+.etbl{width:100%;border-collapse:collapse;}
+.etbl thead tr{background:var(--navy);}
+.etbl thead th{padding:7px 9px;font-family:var(--fh);font-size:8px;letter-spacing:1.5px;color:var(--cyan2);font-weight:700;text-transform:uppercase;white-space:nowrap;}
+.etbl thead th:not(:first-child){text-align:right;}
+.etbl tbody tr{border-bottom:1px solid #e8f0f8;}
+.etbl tbody tr:nth-child(even){background:#f6f9fd;}
+.etbl tbody td{padding:7px 9px;vertical-align:middle;}
+.etbl tbody td:not(:first-child){text-align:right;font-family:var(--fh);font-weight:700;}
+.etbl .td-name{font-family:var(--fh);font-weight:800;font-size:12px;color:var(--navy);}
+.etbl .td-model{font-size:10px;color:var(--blue);font-family:var(--fh);font-weight:700;}
+.etbl .td-kw{color:var(--blue);}
+.etbl .td-kwh{color:var(--muted);}
+.etbl .td-day{color:var(--orange);}
+.etbl .td-mon{color:var(--green);}
+.etbl .td-yr{color:var(--red);}
+.etbl .tr-passive td{color:#aab8cc;font-style:italic;}
+.etbl tfoot tr{background:var(--navy);}
+.etbl tfoot td{padding:8px 9px;font-family:var(--fh);font-size:13px;font-weight:800;color:var(--white);}
+.etbl tfoot td:not(:first-child){text-align:right;}
+.etbl tfoot .tf-day{color:#ffd060;}
+.etbl tfoot .tf-mon{color:var(--green2);}
+.etbl tfoot .tf-yr{color:#ff8860;}
+
+/* ══ BIG NUMBERS ══ */
+.big-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.bc{border-radius:8px;padding:14px 12px 12px;text-align:center;border:1.5px solid;}
+.bc-day{background:#fffbf0;border-color:#d4870a;}
+.bc-mon{background:#f0fbf5;border-color:#006b52;}
+.bc-yr{background:#fff5f3;border-color:#b03020;}
+.bc .bl{font-size:7.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;opacity:.55;margin-bottom:5px;}
+.bc .bk{font-family:var(--fm);font-size:11px;opacity:.45;margin-bottom:3px;}
+.bc .bv{font-family:var(--fh);font-size:clamp(24px,5vw,36px);font-weight:900;line-height:1;}
+.bc .bu{font-size:9px;font-weight:600;opacity:.5;margin-top:3px;}
+.bc-day .bv{color:#8b4800;} .bc-mon .bv{color:#004d38;} .bc-yr .bv{color:#7a1a10;}
+
+/* ══ SYSTEM FLOW ══ */
+.flow-row{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding-bottom:2px;}
+.flow-step{flex:1;min-width:120px;display:flex;}
+.flow-box{border-radius:7px;padding:10px 10px 8px;flex:1;display:flex;flex-direction:column;gap:3px;position:relative;}
+.flow-arr{display:flex;align-items:center;padding:0 3px;color:rgba(0,180,200,.3);font-size:16px;align-self:center;margin-top:-8px;flex-shrink:0;}
+.fn{position:absolute;top:5px;right:7px;font-family:var(--fh);font-size:8px;font-weight:800;opacity:.4;}
+.ficon{font-size:18px;line-height:1;}
+.flbl{font-size:7px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;opacity:.6;}
+.fmdl{font-family:var(--fh);font-size:15px;font-weight:900;line-height:1.1;}
+.fcap{font-size:8px;opacity:.55;margin-top:1px;}
+/* step colors — light bg friendly */
+.s-comp{background:#ddeeff;color:#1a3060;border:1.5px solid #90b8e0;}
+.s-comp .fmdl{color:#0a2a70;}
+.s-dryer{background:#d0f2f8;color:#003d4d;border:1.5px solid #70c8dc;}
+.s-dryer .fmdl{color:#005070;}
+.s-ksyf{background:#fff3d8;color:#503000;border:1.5px solid #e0b050;}
+.s-ksyf .fmdl{color:#703800;}
+.s-ksaf{background:#d8f5e8;color:#003820;border:1.5px solid #60c890;}
+.s-ksaf .fmdl{color:#004828;}
+.s-tank{background:#eeddff;color:#2a004d;border:1.5px solid #b080e0;}
+.s-tank .fmdl{color:#3a006a;}
+
+/* ══ TANK GRID ══ */
+.tank-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:7px;}
+.tank-opt{border-radius:6px;padding:10px 11px;border:1.5px solid;}
+.tank-opt.tr{border-color:var(--cyan);background:#eaf8fc;}
+.tank-opt.ta{border-color:var(--border);background:#f7f9fd;}
+.tank-badge{display:inline-block;background:var(--cyan);color:var(--navy);font-size:6.5px;
+  padding:1px 6px;border-radius:3px;font-weight:800;letter-spacing:1px;margin-bottom:4px;}
+.tank-size{font-family:var(--fh);font-size:22px;font-weight:900;color:var(--navy);}
+.tank-sub{font-size:8px;color:var(--muted);margin-top:2px;}
+.tank-why{font-size:8px;color:var(--blue);margin-top:4px;font-weight:600;line-height:1.4;}
+
+/* ══ PRINT ══ */
+@media print{
+  body{background:#fff!important;padding:4px!important;font-size:11px!important;}
+  .page{max-width:100%!important;}
+  .no-print{display:none!important;}
+  .hdr,.card,.fstrip,.etbl thead tr,.etbl tfoot tr,
+  .bc,.flow-box,.tank-opt.tr{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
+  @page{size:A4 portrait;margin:8mm 8mm 8mm 8mm;}
+  .big-row{grid-template-columns:repeat(3,1fr)!important;}
+  .g4,.g5{grid-template-columns:repeat(4,1fr)!important;}
+  .g3{grid-template-columns:repeat(3,1fr)!important;}
+  .no-break{page-break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══ HEADER ══ -->
+<div class="hdr no-break">
+  <div class="hdr-top">
+    <div class="hdr-logo-wrap">
+      <img src="/mnt/user-data/uploads/kaishan_engineer.jpg" alt="KAISHAN" id="logo-img">
+    </div>
+    <div class="hdr-divider"></div>
+    <div class="hdr-text">
+      <div class="eye">Engineering · Energy Cost Analysis · Industrial System</div>
+      <h1>ระบบอากาศอัด <em>KAISHAN</em><br>สรุปอุปกรณ์ &amp; วิเคราะห์ค่าไฟฟ้า</h1>
+      <div class="sub">Compressed Air System · Air Dryer · Filter (KSAF+KSYF) · Air Receiver Tank · Professional Energy Costing</div>
+    </div>
+    <div class="hdr-badges">
+      <span class="badge badge-iso">ISO 7183 · FAD</span>
+      <span class="badge badge-vsd">VSD · Inverter</span>
+      <span class="badge badge-iso" style="letter-spacing:.5px;">PMV2-75 Series</span>
+    </div>
+  </div>
+  <div class="hdr-bot">
+    <span>ZHEJIANG KAISHAN COMPRESSOR CO., LTD. &nbsp;|&nbsp; Nm³/min (FAD) @ 20°C, 1 bar(a), 0% RH</span>
+    <span id="doc-date">—</span>
+    <span>Doc: KSH-ECALC-001</span>
+  </div>
+</div>
+
+<!-- ══ SECTION A: COMPRESSOR SPEC (from PDF) ══ -->
+<div class="card no-break">
+  <div class="card-head"><div class="ch-dot"></div><span class="ch-title">A — ข้อมูล Air Compressor (จาก Data Sheet จริง)</span></div>
+  <div class="card-body">
+    <div class="sec-lbl">📄 PMV2-75 Series — เลือกรุ่นตามความดันใช้งาน</div>
+    <div class="input-grid g4" style="margin-bottom:10px;">
+      <div class="field">
+        <div class="fl"><span>รุ่น Compressor</span></div>
+        <div class="fr">
+          <select id="comp-model" onchange="onCompChange()">
+            <option value="PMV2-75-6|16.55|91.0|5.5|6" selected>PMV2-75-6 (6 bar)</option>
+            <option value="PMV2-75-7|15.8|93.2|5.9|7">PMV2-75-7 (7 bar)</option>
+            <option value="PMV2-75-8|14.7|87.9|6.0|8">PMV2-75-8 (8 bar)</option>
+          </select>
+          <div class="u">Model</div>
+        </div>
+      </div>
+      <div class="field f-gold">
+        <div class="fl"><span>★ กำลังมอเตอร์ (Motor kW)</span></div>
+        <div class="fr"><input type="number" id="motor-kw" value="75" min="1" step="0.5" oninput="calc()"><div class="u">kW</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>Input Power จริง (kW input)</span></div>
+        <div class="fr"><input type="number" id="input-kw" value="87.9" min="1" step="0.1" oninput="calc()"><div class="u">kW</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>Specific Power</span></div>
+        <div class="fr"><input type="number" id="spec-power" value="6.0" min="1" step="0.01" oninput="calc()"><div class="u">kW/m³/min</div></div>
+      </div>
+    </div>
+    <div class="input-grid g5">
+      <div class="field">
+        <div class="fl"><span>★ Flow FAD</span></div>
+        <div class="fr"><input type="number" id="fad-flow" value="14.7" min="0.1" step="0.1" oninput="calc()"><div class="u">m³/min</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>★ ความดันใช้งาน</span></div>
+        <div class="fr"><input type="number" id="op-pressure" value="8" min="1" step="0.5" oninput="calc()"><div class="u">bar</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>Motor Efficiency</span></div>
+        <div class="fr"><input type="number" id="motor-eff" value="96.6" min="70" max="100" step="0.1" oninput="calc()"><div class="u">%</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>Noise Level</span></div>
+        <div class="fr"><input type="number" id="noise" value="71" step="1" oninput="calc()"><div class="u">dBA</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>Starter Type</span></div>
+        <div class="fr">
+          <select id="starter" onchange="calc()">
+            <option value="VSD" selected>VSD (Inverter)</option>
+            <option value="DOL">DOL</option>
+            <option value="Star-Delta">Star-Delta</option>
+          </select>
+          <div class="u">Type</div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-note" style="margin-top:9px;">
+      <strong>หมายเหตุจาก Data Sheet:</strong>
+      Motor rated 75 kW · Eff 96.6% · 3000 rpm · Frame 225S · SF 1.25 · FLA 127A / SFA 158.75A ·
+      VSD Drive · IP54 · 380V/50Hz · Weight 2,220 kg · L×W×H: 2760×1630×1735 mm · Discharge: DN65
+    </div>
+  </div>
+</div>
+
+<!-- ══ SECTION B: OPERATING PARAMETERS ══ -->
+<div class="card no-break">
+  <div class="card-head"><div class="ch-dot gold"></div><span class="ch-title">B — ★ พารามิเตอร์การใช้งานจริง (Key Variables)</span></div>
+  <div class="card-body">
+    <div class="input-grid g4" style="margin-bottom:8px;">
+      <div class="field f-gold">
+        <div class="fl"><span>★ อัตราค่าไฟฟ้า</span></div>
+        <div class="fr"><input type="number" id="tariff" value="4.50" min="0.5" max="30" step="0.01" oninput="calc()"><div class="u">บาท / kWh</div></div>
+      </div>
+      <div class="field f-gold">
+        <div class="fl"><span>★ ชั่วโมงใช้งาน / วัน</span></div>
+        <div class="fr"><input type="number" id="hours" value="16" min="1" max="24" step="0.5" oninput="calc()"><div class="u">ชม./วัน</div></div>
+      </div>
+      <div class="field f-gold">
+        <div class="fl"><span>★ วันทำงาน / เดือน</span></div>
+        <div class="fr"><input type="number" id="workdays" value="26" min="1" max="31" step="1" oninput="calc()"><div class="u">วัน/เดือน</div></div>
+      </div>
+      <div class="field f-gold">
+        <div class="fl"><span>★ เดือน / ปี</span></div>
+        <div class="fr"><input type="number" id="months" value="12" min="1" max="12" step="1" oninput="calc()"><div class="u">เดือน/ปี</div></div>
+      </div>
+    </div>
+    <div class="input-grid g5">
+      <div class="field f-gold">
+        <div class="fl"><span>★ Load Factor Compressor</span></div>
+        <div class="fr"><input type="number" id="lf-comp" value="75" min="20" max="100" step="5" oninput="calc()"><div class="u">%</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>Load Factor Dryer</span></div>
+        <div class="fr"><input type="number" id="lf-dryer" value="85" min="50" max="100" step="5" oninput="calc()"><div class="u">%</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>Unload Power (% of Full)</span></div>
+        <div class="fr"><input type="number" id="unload-pct" value="25" min="5" max="60" step="1" oninput="calc()"><div class="u">%</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>Power Factor (PF)</span></div>
+        <div class="fr"><input type="number" id="pf" value="0.88" min="0.6" max="1.0" step="0.01" oninput="calc()"><div class="u">cosφ</div></div>
+      </div>
+      <div class="field f-red">
+        <div class="fl"><span>Peak Demand Charge</span></div>
+        <div class="fr"><input type="number" id="demand" value="0" min="0" step="10" oninput="calc()"><div class="u">฿/kVA/เดือน</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SECTION C: AIR TREATMENT ══ -->
+<div class="card no-break">
+  <div class="card-head"><div class="ch-dot green"></div><span class="ch-title">C — อุปกรณ์บำบัดอากาศ (Air Treatment Equipment)</span></div>
+  <div class="card-body">
+    <div class="input-grid g4">
+      <div class="field">
+        <div class="fl"><span>KSR Air Dryer รุ่น</span></div>
+        <div class="fr">
+          <select id="dryer-sel" onchange="calc()">
+            <option value="KSR-014HG|1.5|0.48">KSR-014HG — 1.5 Nm³/min</option>
+            <option value="KSR-028HG|2.6|0.62">KSR-028HG — 2.6 Nm³/min</option>
+            <option value="KSR-038HG|3.8|0.875">KSR-038HG — 3.8 Nm³/min</option>
+            <option value="KSR-071HG|6.9|1.15">KSR-071HG — 6.9 Nm³/min</option>
+            <option value="KSR-110HG|11.0|2.25">KSR-110HG — 11.0 Nm³/min</option>
+            <option value="KSR-140HG|14.0|2.41">KSR-140HG — 14.0 Nm³/min</option>
+            <option value="KSR-150HG|18.0|3.28" selected>KSR-150HG — 18.0 Nm³/min</option>
+            <option value="KSR-210HG|22.0|4.49">KSR-210HG — 22.0 Nm³/min</option>
+            <option value="KSR-250HG|28.0|4.75">KSR-250HG — 28.0 Nm³/min</option>
+            <option value="KSR-304HG|32.0|5.75">KSR-304HG — 32.0 Nm³/min</option>
+          </select>
+          <div class="u">Dryer</div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>Dryer Refrigerant Power</span></div>
+        <div class="fr"><input type="number" id="dryer-kw" value="3.28" min="0.1" step="0.01" oninput="calc()"><div class="u">kW</div></div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>KSYF Separator รุ่น</span></div>
+        <div class="fr">
+          <select id="ksyf-sel" onchange="calc()">
+            <option value="KSYF-1|1.2">KSYF-1 — 1.2</option>
+            <option value="KSYF-2|2.4">KSYF-2 — 2.4</option>
+            <option value="KSYF-3|3.6">KSYF-3 — 3.6</option>
+            <option value="KSYF-4.5|5.4">KSYF-4.5 — 5.4</option>
+            <option value="KSYF-6|6.5">KSYF-6 — 6.5</option>
+            <option value="KSYF-8|10">KSYF-8 — 10</option>
+            <option value="KSYF-10|12">KSYF-10 — 12</option>
+            <option value="KSYF-12|14">KSYF-12 — 14</option>
+            <option value="KSYF-15|18" selected>KSYF-15 — 18</option>
+            <option value="KSYF-20|24">KSYF-20 — 24</option>
+            <option value="KSYF-25|29">KSYF-25 — 29</option>
+            <option value="KSYF-30|36">KSYF-30 — 36</option>
+          </select>
+          <div class="u">Nm³/min</div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="fl"><span>KSAF Filter รุ่น</span></div>
+        <div class="fr">
+          <select id="ksaf-sel" onchange="calc()">
+            <option value="KSAF-1|1.5">KSAF-1 — 1.5</option>
+            <option value="KSAF-1B|2">KSAF-1B — 2</option>
+            <option value="KSAF-2|3">KSAF-2 — 3</option>
+            <option value="KSAF-3|4">KSAF-3 — 4</option>
+            <option value="KSAF-6|7">KSAF-6 — 7</option>
+            <option value="KSAF-6B|10">KSAF-6B — 10</option>
+            <option value="KSAF-12|14">KSAF-12 — 14</option>
+            <option value="KSAF-15|18" selected>KSAF-15 — 18</option>
+            <option value="KSAF-20|22">KSAF-20 — 22</option>
+            <option value="KSAF-25|28">KSAF-25 — 28</option>
+            <option value="KSAF-30|33">KSAF-30 — 33</option>
+          </select>
+          <div class="u">Nm³/min</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CALCULATION STRIP ══ -->
+<div class="fstrip no-break">
+  <div class="frow">
+    <div class="frow-lbl r1">สูตรคำนวณ</div>
+    <div class="fi"><div class="fl2">Input Power (kW จริง)</div><div class="fv c" id="rv-inputkw">—</div><div class="fu">kW</div></div>
+    <div class="fop">×</div>
+    <div class="fi"><div class="fl2">Load Factor</div><div class="fv g" id="rv-lf">—</div><div class="fu">%</div></div>
+    <div class="fop">=</div>
+    <div class="fi"><div class="fl2">กำลังใช้จริง</div><div class="fv gr" id="rv-realkw">—</div><div class="fu">kW (effective)</div></div>
+    <div class="fop">+</div>
+    <div class="fi"><div class="fl2">Dryer Power</div><div class="fv" style="color:#a0e0ff;" id="rv-dryerkw">—</div><div class="fu">kW</div></div>
+    <div class="fop">=</div>
+    <div class="fi"><div class="fl2">รวม kW ทั้งระบบ</div><div class="fv fin" id="rv-totkw">—</div><div class="fu">kW total</div></div>
+  </div>
+  <div class="frow frow2">
+    <div class="frow-lbl r2">ค่าไฟฟ้า</div>
+    <div class="fi"><div class="fl2">รวม kW</div><div class="fv w" id="rv-totkw2">—</div><div class="fu">kW</div></div>
+    <div class="fop">×</div>
+    <div class="fi"><div class="fl2">ชั่วโมง/วัน</div><div class="fv g" id="rv-hrs">—</div><div class="fu">h/day</div></div>
+    <div class="fop">=</div>
+    <div class="fi"><div class="fl2">kWh / วัน</div><div class="fv gr" id="rv-kwh">—</div><div class="fu">kWh/day</div></div>
+    <div class="fop">×</div>
+    <div class="fi"><div class="fl2">ค่าไฟฟ้า</div><div class="fv g" id="rv-tariff">—</div><div class="fu">บาท/kWh</div></div>
+    <div class="fop">=</div>
+    <div class="fi"><div class="fl2">✅ ค่าไฟ / วัน</div><div class="fv fin" id="rv-daycost">—</div><div class="fu">บาท/วัน</div></div>
+  </div>
+</div>
+
+<!-- ══ SYSTEM FLOW ══ -->
+<div class="card no-break">
+  <div class="card-head"><div class="ch-dot" style="background:var(--green2)"></div><span class="ch-title">ลำดับการต่ออุปกรณ์ในระบบ</span></div>
+  <div class="card-body" style="padding:9px 12px;">
+    <div class="flow-row" id="flow-row"><!-- JS --></div>
+  </div>
+</div>
+
+<!-- ══ TANK ══ -->
+<div class="card no-break">
+  <div class="card-head"><div class="ch-dot" style="background:#b080e0"></div><span class="ch-title">🛢 ถังเก็บลมแนะนำ + เหตุผลประหยัดไฟ</span></div>
+  <div class="card-body">
+    <div class="tank-grid" id="tank-grid"><!-- JS --></div>
+    <div class="spec-note" style="margin-top:8px;">
+      <strong>สูตรถัง (ISO):</strong> V (L) = Q (m³/s) × P<sub>atm</sub> × t ÷ ΔP &nbsp;|&nbsp;
+      t = 30 วิ, ΔP = 1 bar &nbsp;|&nbsp;
+      <strong>ถังใหญ่ขึ้น → ลด on/off cycle → VSD ทำงานโซนประหยัดไฟนานขึ้น 8–15%</strong>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ENERGY TABLE ══ -->
+<div class="card no-break">
+  <div class="card-head"><div class="ch-dot gold"></div><span class="ch-title">⚡ ตารางวิเคราะห์การกินกระแสไฟฟ้า — รายละเอียดทุกอุปกรณ์</span></div>
+  <div class="card-body" style="padding:0;">
+    <table class="etbl">
+      <thead>
+        <tr>
+          <th>อุปกรณ์ / รุ่น</th>
+          <th>กำลังไฟ<br>(kW)</th>
+          <th>Load<br>Factor</th>
+          <th>kW<br>จริง</th>
+          <th>kWh<br>/วัน</th>
+          <th>ค่าไฟ<br>บาท/วัน</th>
+          <th>ค่าไฟ<br>บาท/เดือน</th>
+          <th>ค่าไฟ<br>บาท/ปี</th>
+        </tr>
+      </thead>
+      <tbody id="etbl-body"><!-- JS --></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">รวมทั้งระบบ (Total System)</td>
+          <td id="tf-kw">—</td>
+          <td id="tf-kwh">—</td>
+          <td id="tf-day" class="tf-day">—</td>
+          <td id="tf-mon" class="tf-mon">—</td>
+          <td id="tf-yr"  class="tf-yr">—</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- ══ BIG NUMBERS ══ -->
+<div class="big-row no-break">
+  <div class="bc bc-day">
+    <div class="bl">⚡ ค่าไฟฟ้า / วัน</div>
+    <div class="bk" id="bn-kwh-d">— kWh</div>
+    <div class="bv" id="bn-d">—</div>
+    <div class="bu">บาท / วัน</div>
+  </div>
+  <div class="bc bc-mon">
+    <div class="bl">📅 ค่าไฟฟ้า / เดือน</div>
+    <div class="bk" id="bn-kwh-m">— kWh</div>
+    <div class="bv" id="bn-m">—</div>
+    <div class="bu">บาท / เดือน</div>
+  </div>
+  <div class="bc bc-yr">
+    <div class="bl">📆 ค่าไฟฟ้า / ปี</div>
+    <div class="bk" id="bn-kwh-y">— kWh</div>
+    <div class="bv" id="bn-y">—</div>
+    <div class="bu">บาท / ปี</div>
+  </div>
+</div>
+
+<!-- ══ DEMAND CHARGE NOTE ══ -->
+<div id="demand-note" class="spec-note no-break" style="border-left-color:var(--red);display:none;">
+  <strong>⚠ Demand Charge:</strong> kVA = kW ÷ PF =
+  <span id="dn-kva">—</span> kVA · ค่า Demand = <span id="dn-demand">—</span> บาท/เดือน
+  (รวมแล้ว <span id="dn-total">—</span> บาท/เดือน)
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div style="background:var(--navy);border-radius:8px;padding:7px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;" class="no-break">
+  <div style="font-family:var(--fh);font-size:10px;font-weight:800;color:var(--cyan2);letter-spacing:1px;">KAISHAN — Professional Energy Cost Calculator</div>
+  <div style="font-size:7.5px;color:rgba(255,255,255,.3);">ISO 7183 · KAISHAN Engineering · Nm³/min (FAD) · PMV2-75 Data Sheet 2021</div>
+  <div style="font-size:7.5px;color:rgba(255,255,255,.3);">ZHEJIANG KAISHAN COMPRESSOR CO., LTD.</div>
+</div>
+
+<div style="text-align:center;margin-top:2px;" class="no-print">
+  <button onclick="window.print()" style="background:var(--navy);color:var(--cyan2);border:none;border-radius:6px;padding:10px 28px;font-family:var(--fh);font-size:14px;font-weight:800;letter-spacing:1px;cursor:pointer;">🖨️ พิมพ์ / บันทึก PDF</button>
+</div>
+
+</div><!-- /page -->
+
+<script>
+var TANKS=[
+  {vol:200,l:'200 L',n:'< 7.5 kW'},{vol:300,l:'300 L',n:'< 11 kW'},
+  {vol:500,l:'500 L',n:'11–22 kW'},{vol:750,l:'750 L',n:'22–37 kW'},
+  {vol:1000,l:'1,000 L',n:'37–55 kW'},{vol:1500,l:'1,500 L',n:'55–75 kW'},
+  {vol:2000,l:'2,000 L',n:'75–90 kW'},{vol:3000,l:'3,000 L',n:'90–132 kW'},
+  {vol:4000,l:'4,000 L',n:'132–160 kW'},{vol:5000,l:'5,000+ L',n:'> 160 kW'},
+];
+
+function g(id){return document.getElementById(id);}
+function gv(id){return parseFloat(g(id).value)||0;}
+function fmt(n){return n.toLocaleString('th-TH',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function fd(n,d){return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d});}
+
+function onCompChange(){
+  var parts=g('comp-model').value.split('|');
+  g('fad-flow').value=parts[1];
+  g('input-kw').value=parts[2];
+  g('spec-power').value=parts[3];
+  g('op-pressure').value=parts[4];
+  calc();
+}
+
+function onDryerChange(){
+  var parts=g('dryer-sel').value.split('|');
+  g('dryer-kw').value=parts[2];
+  calc();
+}
+g('dryer-sel').addEventListener('change',onDryerChange);
+
+function calcTank(flow){
+  var qm3s=flow/60, t=30, dP=1;
+  var vL=qm3s*1*t/dP*1000;
+  var rec=null,alt=null;
+  for(var i=0;i<TANKS.length;i++){
+    if(TANKS[i].vol>=vL&&!rec) rec=TANKS[i];
+    if(TANKS[i].vol>=vL*1.5&&!alt) alt=TANKS[i];
+  }
+  if(!rec) rec=TANKS[TANKS.length-1];
+  if(!alt||alt===rec){var ri=TANKS.indexOf(rec);alt=TANKS[Math.min(ri+1,TANKS.length-1)];}
+  return {calc:Math.round(vL),rec:rec,alt:alt};
+}
+
+function calc(){
+  var inputKw  = gv('input-kw');
+  var motorKw  = gv('motor-kw');
+  var lfComp   = gv('lf-comp')/100;
+  var lfDryer  = gv('lf-dryer')/100;
+  var tariff   = gv('tariff');
+  var hours    = gv('hours');
+  var workdays = gv('workdays');
+  var months   = gv('months');
+  var dryerKw  = gv('dryer-kw');
+  var pf       = gv('pf');
+  var demand   = gv('demand');
+  var fadFlow  = gv('fad-flow');
+
+  // Compressor effective power — use Input kW × LF (most accurate for VSD)
+  var compRealKw  = inputKw * lfComp;
+  var dryerRealKw = dryerKw * lfDryer;
+  var totKw       = compRealKw + dryerRealKw;
+  var kwhDay      = totKw * hours;
+  var thbDay      = kwhDay * tariff;
+  var thbMon      = thbDay * workdays;
+  var thbYr       = thbMon * months;
+
+  // Demand
+  var kva         = totKw / (pf||0.88);
+  var demandMon   = kva * demand;
+
+  // Formula strip
+  g('rv-inputkw').textContent = fd(inputKw,1);
+  g('rv-lf').textContent      = fd(lfComp*100,0)+'%';
+  g('rv-realkw').textContent  = fd(compRealKw,1);
+  g('rv-dryerkw').textContent = fd(dryerRealKw,1);
+  g('rv-totkw').textContent   = fd(totKw,1);
+  g('rv-totkw2').textContent  = fd(totKw,1);
+  g('rv-hrs').textContent     = fd(hours,1);
+  g('rv-kwh').textContent     = fd(kwhDay,1);
+  g('rv-tariff').textContent  = fd(tariff,2);
+  g('rv-daycost').textContent = fmt(thbDay);
+
+  // Flow sequence
+  var dryerParts = g('dryer-sel').value.split('|');
+  var ksyfParts  = g('ksyf-sel').value.split('|');
+  var ksafParts  = g('ksaf-sel').value.split('|');
+  var compModel  = g('comp-model').value.split('|')[0];
+
+  var steps=[
+    {n:'1',icon:'🔵',lbl:'Air Compressor',mdl:compModel,
+     cap:fadFlow+' m³/min · '+inputKw+' kW',cls:'s-comp'},
+    {n:'2',icon:'❄️',lbl:'KSR Air Dryer',mdl:dryerParts[0],
+     cap:dryerParts[1]+' Nm³/min · '+dryerParts[2]+' kW',cls:'s-dryer'},
+    {n:'3',icon:'🟠',lbl:'KSYF Separator',mdl:ksyfParts[0],
+     cap:ksyfParts[1]+' Nm³/min · Passive',cls:'s-ksyf'},
+    {n:'4',icon:'🟢',lbl:'KSAF Filter',mdl:ksafParts[0],
+     cap:ksafParts[1]+' Nm³/min · Passive',cls:'s-ksaf'},
+  ];
+  var tank=calcTank(fadFlow);
+  var fh='';
+  for(var i=0;i<steps.length;i++){
+    var s=steps[i];
+    if(i>0) fh+='<div class="flow-arr">▶</div>';
+    fh+='<div class="flow-step"><div class="flow-box '+s.cls+'">';
+    fh+='<div class="fn">'+s.n+'</div>';
+    fh+='<div class="ficon">'+s.icon+'</div>';
+    fh+='<div class="flbl">'+s.lbl+'</div>';
+    fh+='<div class="fmdl">'+s.mdl+'</div>';
+    fh+='<div class="fcap">'+s.cap+'</div>';
+    fh+='</div></div>';
+  }
+  fh+='<div class="flow-arr">▶</div>';
+  fh+='<div class="flow-step"><div class="flow-box s-tank">';
+  fh+='<div class="fn">5</div><div class="ficon">🛢</div>';
+  fh+='<div class="flbl">Air Receiver Tank</div>';
+  fh+='<div class="fmdl">'+tank.rec.l+'</div>';
+  fh+='<div class="fcap">แนะนำ (คำนวณ '+tank.calc+' L)</div>';
+  fh+='</div></div>';
+  g('flow-row').innerHTML=fh;
+
+  // Tank
+  var tg='';
+  var tanks3=[
+    {t:tank.rec,tp:'tr',why:'✅ ขนาดพอดีตามสูตร ISO — ลด on/off ลด wear'},
+    {t:tank.alt,tp:'ta',why:'⬆ ขนาดใหญ่ขึ้น — VSD โซนประหยัด นานขึ้น 8–15%'},
+  ];
+  var ri=TANKS.indexOf(tank.rec);
+  if(ri>0) tanks3.push({t:TANKS[ri-1],tp:'ta',why:'💰 ประหยัดงบ — เพียงพอสำหรับระบบนี้'});
+  for(var j=0;j<tanks3.length;j++){
+    var ts=tanks3[j];if(!ts.t)continue;
+    tg+='<div class="tank-opt '+ts.tp+'">';
+    if(ts.tp==='tr') tg+='<div class="tank-badge">⭐ แนะนำ</div>';
+    tg+='<div class="tank-size">'+ts.t.l+'</div>';
+    tg+='<div class="tank-sub">'+ts.t.n+'</div>';
+    tg+='<div class="tank-why">'+ts.why+'</div></div>';
+  }
+  g('tank-grid').innerHTML=tg;
+
+  // Energy table
+  var equip=[
+    {icon:'🔵',name:'Air Compressor',mdl:compModel,kw:inputKw,lf:lfComp,passive:false},
+    {icon:'❄️',name:'KSR Air Dryer',mdl:dryerParts[0],kw:dryerKw,lf:lfDryer,passive:false},
+    {icon:'🟠',name:'KSYF Separator',mdl:ksyfParts[0],kw:0,lf:0,passive:true},
+    {icon:'🟢',name:'KSAF Filter',mdl:ksafParts[0],kw:0,lf:0,passive:true},
+  ];
+  var tb='',tKw=0,tKwh=0,tDay=0,tMon=0,tYr=0;
+  for(var k=0;k<equip.length;k++){
+    var eq=equip[k];
+    if(eq.passive){
+      tb+='<tr class="tr-passive"><td><span class="td-name">'+eq.icon+' '+eq.name+'</span><br><span class="td-model">'+eq.mdl+'</span></td>';
+      tb+='<td>—</td><td>Passive</td><td>—</td><td>—</td>';
+      tb+='<td colspan="3" style="font-size:9px;color:#aab8cc;text-align:center;">ไม่มีมอเตอร์ — ไม่กินไฟ</td></tr>';
+      continue;
+    }
+    var rKw=eq.kw*eq.lf;
+    var kwh=rKw*hours;
+    var dy=kwh*tariff;
+    var mo=dy*workdays;
+    var yr=mo*months;
+    tKw+=rKw; tKwh+=kwh; tDay+=dy; tMon+=mo; tYr+=yr;
+    tb+='<tr>';
+    tb+='<td><span class="td-name">'+eq.icon+' '+eq.name+'</span><br><span class="td-model">'+eq.mdl+'</span></td>';
+    tb+='<td class="td-kw">'+fd(eq.kw,1)+'</td>';
+    tb+='<td class="td-kw">'+Math.round(eq.lf*100)+'%</td>';
+    tb+='<td class="td-kw">'+fd(rKw,1)+'</td>';
+    tb+='<td class="td-kwh">'+fd(kwh,1)+'</td>';
+    tb+='<td class="td-day">'+fmt(dy)+' ฿</td>';
+    tb+='<td class="td-mon">'+fmt(mo)+' ฿</td>';
+    tb+='<td class="td-yr">'+fmt(yr)+' ฿</td>';
+    tb+='</tr>';
+  }
+  g('etbl-body').innerHTML=tb;
+  g('tf-kw').textContent  = fd(tKw,1)+' kW';
+  g('tf-kwh').textContent = fd(tKwh,1)+' kWh';
+  g('tf-day').textContent = fmt(tDay)+' ฿';
+  g('tf-mon').textContent = fmt(tMon)+' ฿';
+  g('tf-yr').textContent  = fmt(tYr)+' ฿';
+
+  // Big numbers
+  g('bn-kwh-d').textContent = fd(tKwh,1)+' kWh';
+  g('bn-kwh-m').textContent = fd(tKwh*workdays,0)+' kWh';
+  g('bn-kwh-y').textContent = fd(tKwh*workdays*months,0)+' kWh';
+  g('bn-d').textContent = fmt(tDay);
+  g('bn-m').textContent = fmt(tMon);
+  g('bn-y').textContent = fmt(tYr);
+
+  // Demand
+  if(demand>0){
+    g('demand-note').style.display='block';
+    g('dn-kva').textContent=fd(kva,1);
+    g('dn-demand').textContent=fmt(demandMon);
+    g('dn-total').textContent=fmt(tMon+demandMon);
+  } else {
+    g('demand-note').style.display='none';
+  }
+
+  // Date
+  var now=new Date();
+  var mo2=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  g('doc-date').textContent='Generated: '+now.getDate()+' '+mo2[now.getMonth()]+' '+now.getFullYear();
+}
+
+// Fix logo for printing — embed as base64
+(function(){
+  var img=g('logo-img');
+  var c=document.createElement('canvas');
+  img.onload=function(){
+    c.width=img.naturalWidth; c.height=img.naturalHeight;
+    c.getContext('2d').drawImage(img,0,0);
+    img.src=c.toDataURL('image/jpeg',0.9);
+  };
+  // already loaded
+  if(img.complete) img.onload && img.onload();
+})();
+
+calc();
+</script>
+</body>
+</html>
